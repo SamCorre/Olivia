@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Olivia 🌼</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#F5F6F0;--bg2:#ECEEE5;--bg3:#DDE0D3;
+  --text:#1E2418;--text2:#617060;--text3:#A0AA95;
+  --border:#CDD4C0;--accent:#5A6E3A;--accent2:#8FAF60;
+  --accent-light:#EBF0E0;--accent-dark:#2C3320;
+  --sam:#7B5EA7;--sam-light:#EDE8F5;
+  --gonza:#6B7C2E;--gonza-light:#EEF2DC;
+  --juntos:#7A8C4A;--juntos-light:#ECEFD8;
+  --green:#3D6B2E;--green-light:#E4EDD6;
+  --red:#A63228;--red-light:#FAE8E7;
+  --lila:#7B5EA7;--lila-light:#EDE8F5;--lila-border:#C4B5E8;
+  --yellow:#8A6420;--yellow-light:#FAF0DC;
+  --radius:12px;--radius-sm:8px;
+  --shadow:0 2px 12px rgba(30,36,24,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--accent-dark);}
+.login-box{background:white;border-radius:var(--radius);padding:2.5rem;width:90%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.2);}
+.login-title{font-family:'DM Serif Display',serif;font-size:28px;color:var(--accent-dark);text-align:center;margin-bottom:4px;}
+.login-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:2rem;}
+.login-field{margin-bottom:1rem;}
+.login-field label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px;}
+.login-field input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);}
+.login-field input:focus{outline:2px solid var(--accent);border-color:transparent;}
+.login-btn{width:100%;padding:12px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;margin-top:0.5rem;transition:opacity 0.15s;}
+.login-btn:hover{opacity:0.85;}
+.login-error{font-size:13px;color:var(--red);text-align:center;margin-top:10px;min-height:20px;}
+
+/* APP */
+.app-wrap{display:none;}
+.site-header{background:var(--accent-dark);color:var(--bg);padding:1.5rem 1.5rem 1rem;text-align:center;position:relative;}
+.site-header h1{font-family:'DM Serif Display',serif;font-size:clamp(22px,5vw,32px);font-weight:400;margin-bottom:2px;}
+.site-header p{font-size:12px;opacity:0.6;}
+.logout-btn{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:white;padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.logout-btn:hover{background:rgba(255,255,255,0.25);}
+.nav-wrap{position:sticky;top:0;z-index:100;background:var(--accent-dark);padding:0 1rem 1rem;overflow-x:auto;scrollbar-width:none;}
+.nav-wrap::-webkit-scrollbar{display:none;}
+.nav{display:flex;gap:6px;justify-content:center;min-width:max-content;}
+.nav-btn{padding:7px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.6);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.nav-btn:hover{background:rgba(255,255,255,0.1);color:white;}
+.nav-btn.active{background:var(--accent-light);color:var(--accent);border-color:var(--accent-light);font-weight:500;}
+.app{max-width:900px;margin:0 auto;padding:1.5rem 1rem 4rem;}
+.section{display:none;}.section.active{display:block;}
+.card{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;box-shadow:var(--shadow);}
+.card-title{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.section-intro{font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1rem;}
+.stat-card{background:var(--bg2);border-radius:var(--radius-sm);padding:1rem;text-align:center;border:1px solid var(--border);}
+.stat-num{font-family:'DM Serif Display',serif;font-size:28px;color:var(--accent);}
+.stat-label{font-size:11px;color:var(--text2);margin-top:2px;}
+.progress-bar{background:var(--bg3);border-radius:20px;height:6px;margin:1rem 0;overflow:hidden;}
+.progress-fill{background:var(--accent);height:100%;border-radius:20px;transition:width 0.4s;}
+.trim-badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+.trim-badge{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:500;}
+.b-done{background:var(--green-light);color:var(--green);}
+.b-current{background:var(--accent-light);color:var(--accent);}
+.b-pending{background:var(--bg2);color:var(--text3);}
+.add-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.add-row input,.add-row select{flex:1;min-width:100px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;}
+.btn-add{padding:8px 16px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;white-space:nowrap;}
+.btn-add:hover{opacity:0.85;}
+.btn-sm{padding:5px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:white;color:var(--text2);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;}
+.btn-sm:hover{background:var(--bg2);}
+.btn-sm.done{background:var(--green-light);color:var(--green);border-color:#B5C98A;}
+.btn-sm.edit{color:var(--accent);border-color:var(--accent);background:var(--accent-light);}
+.btn-sm.del{color:var(--red);border-color:var(--red);background:var(--red-light);}
+.btn-sm.cal{color:#1a73e8;border-color:#c5d8f8;background:#e8f0fe;}
+.filter-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.filter-btn{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.filter-btn:hover{background:var(--bg2);}
+.filter-btn.active{background:var(--accent-light);color:var(--accent);border-color:#B5C98A;}
+.nota-box{width:100%;min-height:90px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;resize:vertical;line-height:1.6;}
+.counter{margin-top:10px;font-size:12px;color:var(--text2);}
+.divider{height:1px;background:var(--border);margin:1rem 0;}
+.pill{font-size:11px;padding:2px 9px;border-radius:12px;white-space:nowrap;}
+.pill-ind{background:#FBEAF0;color:#72243E;}
+.pill-hig{background:var(--juntos-light);color:var(--juntos);}
+.pill-hog{background:var(--gonza-light);color:var(--gonza);}
+.pill-mam{background:var(--sam-light);color:var(--sam);}
+.pill-otr{background:var(--bg2);color:var(--text2);}
+.resp-badge{font-size:11px;padding:3px 10px;border-radius:12px;white-space:nowrap;flex-shrink:0;font-weight:500;}
+.resp-sam{background:var(--sam-light);color:var(--sam);border:1px solid var(--lila-border);}
+.resp-gonza{background:var(--gonza-light);color:var(--gonza);}
+.resp-juntos{background:var(--juntos-light);color:var(--juntos);}
+.tip-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;border-left:3px solid var(--accent);}
+.tip-tag{font-size:11px;color:var(--accent);font-weight:500;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
+.tip-card p{font-size:13px;line-height:1.6;}
+.tip-card.ctx{border-left-color:var(--accent2);background:var(--accent-light);}
+.tip-card.ctx .tip-tag{color:var(--gonza);}
+.week-info-card{background:var(--accent-light);border:1px solid #B5C98A;border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;}
+.week-info-card h3{font-family:'DM Serif Display',serif;font-size:16px;color:var(--accent);margin-bottom:10px;}
+.week-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;}
+.week-info-block{background:white;border-radius:var(--radius-sm);padding:10px 12px;border:1px solid var(--border);}
+.week-info-block h4{font-size:11px;font-weight:500;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.week-info-block ul{list-style:none;}
+.week-info-block ul li{font-size:12px;color:var(--text2);padding:2px 0 2px 12px;position:relative;}
+.week-info-block ul li::before{content:'·';position:absolute;left:4px;color:var(--accent2);}
+.agenda-mes{margin-bottom:1.5rem;}
+.agenda-mes-titulo{font-family:'DM Serif Display',serif;font-size:15px;color:var(--text);padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:10px;}
+.agenda-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--bg3);}
+.agenda-item:last-child{border-bottom:none;}
+.agenda-fecha{font-size:11px;color:var(--text3);min-width:65px;padding-top:2px;}
+.agenda-content{flex:1;}
+.agenda-nombre{font-size:13px;font-weight:500;}
+.agenda-actions{display:flex;gap:5px;flex-shrink:0;}
+.compra-row{padding:10px 0;border-bottom:1px solid var(--border);}
+.compra-row:last-child{border-bottom:none;}
+.compra-main{display:flex;align-items:flex-start;gap:8px;}
+.c-check{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;margin-top:2px;}
+.c-check.checked{background:var(--green);border-color:var(--green);color:white;}
+.c-body{flex:1;}
+.c-name{font-size:13px;font-weight:500;}
+.c-name.done{text-decoration:line-through;color:var(--text3);}
+.c-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;align-items:center;}
+.c-note{font-size:11px;color:var(--text2);margin-top:2px;}
+.link-ext{font-size:11px;color:var(--accent);text-decoration:none;}
+.link-ext:hover{text-decoration:underline;}
+.inv-table{width:100%;border-collapse:collapse;font-size:13px;}
+.inv-table th{text-align:left;font-size:11px;font-weight:500;color:var(--text2);padding:6px 8px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px;}
+.inv-table td{padding:9px 8px;border-bottom:1px solid var(--border);vertical-align:top;}
+.inv-table tr:last-child td{border-bottom:none;}
+.talle-pill{font-size:11px;padding:2px 8px;border-radius:10px;background:var(--sam-light);color:var(--sam);}
+.orig-regalo{font-size:11px;padding:2px 8px;border-radius:10px;background:#FBEAF0;color:#72243E;}
+.orig-comprado{font-size:11px;padding:2px 8px;border-radius:10px;background:var(--green-light);color:var(--green);}
+.mud-tabs{display:flex;gap:6px;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:10px;flex-wrap:wrap;}
+.mud-tab{padding:6px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.mud-tab:hover{background:var(--bg2);}
+.mud-tab.active{background:var(--accent);color:white;border-color:var(--accent);}
+.mud-panel{display:none;}.mud-panel.active{display:block;}
+.pres-card{background:var(--bg2);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;border:1px solid var(--border);}
+.pres-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.pres-nombre{font-size:14px;font-weight:500;}
+.pres-monto{font-size:14px;font-weight:500;color:var(--accent);white-space:nowrap;}
+.pres-estado{font-size:11px;padding:2px 8px;border-radius:10px;}
+.est-pend{background:var(--red-light);color:var(--red);}
+.est-cont{background:var(--yellow-light);color:var(--yellow);}
+.est-ok{background:var(--green-light);color:var(--green);}
+.ambiente-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+.amb-btn{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.amb-btn:hover{background:var(--bg2);}
+.amb-btn.active{background:var(--accent-light);color:var(--accent);border-color:#B5C98A;}
+.amb-panel{display:none;}.amb-panel.active{display:block;}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px;}
+.ref-card{background:var(--bg2);border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);position:relative;}
+.ref-card img{width:100%;height:110px;object-fit:cover;display:block;}
+.ref-card-body{padding:8px;}
+.ref-card-note{font-size:11px;color:var(--text2);}
+.ref-card-del{position:absolute;top:4px;right:4px;background:rgba(255,255,255,0.9);border:none;border-radius:4px;padding:3px 7px;font-size:13px;cursor:pointer;}
+.ref-link-item{display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg2);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:6px;}
+.ref-link-item a{font-size:13px;color:var(--accent);flex:1;word-break:break-all;}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:white;border-radius:var(--radius);padding:1.5rem;max-width:480px;width:90%;max-height:90vh;overflow-y:auto;}
+.modal h3{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:1rem;}
+.modal-row{margin-bottom:10px;}
+.modal-row label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px;}
+.modal-row input,.modal-row select,.modal-row textarea{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;}
+.modal-row textarea{min-height:70px;resize:vertical;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1rem;}
+.btn-cancel{padding:8px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.saving-indicator{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--accent);color:white;padding:8px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999;}
+.saving-indicator.show{opacity:1;}
+.undo-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--text);color:white;padding:10px 20px;border-radius:20px;font-size:13px;display:flex;align-items:center;gap:12px;z-index:1000;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;}
+.undo-toast.show{opacity:1;pointer-events:all;}
+.undo-btn{background:var(--lila);color:white;border:none;padding:4px 12px;border-radius:12px;font-size:12px;cursor:pointer;font-family:"DM Sans",sans-serif;font-weight:500;}
+.undo-btn:hover{opacity:0.85;}
+.backup-bar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:1rem;}
+.backup-bar p{font-size:12px;color:var(--text2);}
+.rutina-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;}
+.rutina-hora{font-size:12px;font-weight:500;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.rutina-lista{list-style:none;}
+.rutina-lista li{font-size:13px;color:var(--text2);padding:3px 0 3px 14px;position:relative;}
+.rutina-lista li::before{content:'·';position:absolute;left:4px;color:var(--accent2);}
+@media(max-width:600px){
+  .inv-table th:nth-child(5),.inv-table td:nth-child(5),.inv-table th:nth-child(7),.inv-table td:nth-child(7){display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-box">
+    <div class="login-title">Olivia 🌼</div>
+    <div class="login-sub">Centro de comando — Sam & Gonza</div>
+    <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
+    <div class="login-field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app-wrap" id="app-wrap">
+<div class="site-header">
+  <h1>Olivia 🌼</h1>
+  <p>Centro de comando — Sam & Gonza</p>
+  <button class="logout-btn" onclick="doLogout()">Salir</button>
+</div>
+<div class="nav-wrap">
+  <div class="nav">
+    <button class="nav-btn active" onclick="showSection('embarazo')">🤰 Embarazo</button>
+    <button class="nav-btn" onclick="showSection('turnos')">📅 Turnos</button>
+    <button class="nav-btn" onclick="showSection('compras')">🛍️ Compras</button>
+    <button class="nav-btn" onclick="showSection('inventario')">👕 Ropa Olivia</button>
+    <button class="nav-btn" onclick="showSection('tareas')">✅ Tareas</button>
+    <button class="nav-btn" onclick="showSection('rutinas')">🕐 Rutinas</button>
+    <button class="nav-btn" onclick="showSection('mudanza')">🏠 Mudanza</button>
+    <button class="nav-btn" onclick="showSection('tips')">💡 Tips</button>
+  </div>
+</div>
+<div class="app">
+<div class="backup-bar"><p>💾 Tus datos están guardados en la nube. Podés descargar una copia de seguridad cuando quieras.</p><button class="btn-sm done" onclick="descargarBackup()">⬇️ Descargar backup</button></div>
+
+<!-- EMBARAZO -->
+<div id="sec-embarazo" class="section active">
+  <div class="card">
+    <div class="card-title">🤰 Seguimiento del embarazo</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1rem;">
+      <div><label style="font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:4px;">Semana</label>
+      <input type="number" id="inp-semana" min="1" max="42" value="24" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:22px;font-family:'DM Serif Display',serif;text-align:center;"></div>
+      <div><label style="font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:4px;">Días extra</label>
+      <input type="number" id="inp-dias" min="0" max="6" value="0" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:22px;font-family:'DM Serif Display',serif;text-align:center;"></div>
+      <div><label style="font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:4px;">FPP</label>
+      <input type="date" id="inp-fpp" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:13px;"></div>
+    </div>
+    <button class="btn-add" onclick="guardarEmbarazo()" style="width:100%">💾 Guardar seguimiento</button>
+    <div class="progress-bar" style="margin-top:1rem;"><div class="progress-fill" id="prog-fill" style="width:60%"></div></div>
+    <p style="font-size:12px;color:var(--text2);text-align:center;" id="prog-label">24 semanas · Faltan ~16 semanas</p>
+    <div class="trim-badges">
+      <span class="trim-badge b-done">1er trimestre ✓</span>
+      <span class="trim-badge b-current" id="tb2">2do trimestre — actual</span>
+      <span class="trim-badge b-pending" id="tb3">3er trimestre</span>
+    </div>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num" id="st-semanas">16</div><div class="stat-label">semanas restantes</div></div>
+    <div class="stat-card"><div class="stat-num" id="st-dias">112</div><div class="stat-label">días hasta la FPP</div></div>
+    <div class="stat-card"><div class="stat-num" id="st-pct">60%</div><div class="stat-label">completado</div></div>
+    <div class="stat-card"><div class="stat-num" id="st-fpp">—</div><div class="stat-label">fecha probable</div></div>
+  </div>
+  <div class="week-info-card"><h3 id="wi-titulo">Semana 24</h3><div class="week-info-grid" id="wi-grid"></div></div>
+  <div class="card"><div class="card-title">📝 Notas de la semana</div>
+    <textarea class="nota-box" id="nota-embarazo" placeholder="Síntomas, sensaciones, preguntas para el médico..."></textarea>
+    <button class="btn-sm" style="margin-top:8px" onclick="guardarNota('embarazo','nota-embarazo')">💾 Guardar nota</button>
+  </div>
+</div>
+
+<!-- TURNOS -->
+<div id="sec-turnos" class="section">
+  <div class="card">
+    <div class="card-title">📅 Turnos médicos</div>
+    <div id="lista-turnos"><p style="font-size:13px;color:var(--text3);font-style:italic;">Cargando...</p></div>
+    <div class="add-row">
+      <input type="text" id="new-turno" placeholder="Nombre del turno...">
+      <input type="date" id="new-turno-fecha">
+      <button class="btn-add" onclick="agregarTurno()">+ Agregar</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMPRAS -->
+<div id="sec-compras" class="section">
+  <div class="card">
+    <div class="card-title">🛍️ Lista de compras</div>
+    <div class="filter-row" id="filtros-compras">
+      <button class="filter-btn active" onclick="filtrarC('todas',this)">Todas</button>
+      <button class="filter-btn" onclick="filtrarC('finalizado',this)">✓ Listas</button>
+      <button class="filter-btn" onclick="filtrarC('pendiente',this)">Pendientes</button>
+      <button class="filter-btn" onclick="filtrarC('alto',this)">⚠ Urgente</button>
+      <button class="filter-btn" onclick="filtrarC('indumentaria',this)">Ropa</button>
+      <button class="filter-btn" onclick="filtrarC('higiene',this)">Higiene</button>
+      <button class="filter-btn" onclick="filtrarC('hogar',this)">Hogar</button>
+      <button class="filter-btn" onclick="filtrarC('mama',this)">Mamá</button>
+    </div>
+    <div id="lista-compras"><p style="font-size:13px;color:var(--text3);font-style:italic;">Cargando...</p></div>
+    <button class="btn-add" style="margin-top:12px;width:100%" onclick="abrirModal('modal-compra',null,'compra')">+ Agregar ítem</button>
+    <p class="counter" id="compras-ctr"></p>
+  </div>
+</div>
+
+<!-- INVENTARIO -->
+<div id="sec-inventario" class="section">
+  <div class="card">
+    <div class="card-title">👕 Ropa de Olivia</div>
+    <div class="filter-row" id="filtros-inv">
+      <button class="filter-btn active" onclick="filtrarI('todas',this)">Todas</button>
+      <button class="filter-btn" onclick="filtrarI('RN',this)">RN</button>
+      <button class="filter-btn" onclick="filtrarI('1-3',this)">1–3 M</button>
+      <button class="filter-btn" onclick="filtrarI('3-6',this)">3–6 M</button>
+      <button class="filter-btn" onclick="filtrarI('regalo',this)">Regalos</button>
+      <button class="filter-btn" onclick="filtrarI('comprado',this)">Comprado</button>
+    </div>
+    <div style="overflow-x:auto;"><table class="inv-table">
+      <thead><tr><th>Prenda</th><th>Detalle</th><th>Cant.</th><th>Talle</th><th>Estación</th><th>Origen</th><th>De quién</th><th></th></tr></thead>
+      <tbody id="inv-tbody"></tbody>
+    </table></div>
+    <p class="counter" id="inv-ctr"></p>
+    <button class="btn-add" style="margin-top:12px;width:100%" onclick="abrirModal('modal-inv',null,'inv')">+ Agregar prenda</button>
+  </div>
+</div>
+
+<!-- TAREAS -->
+<div id="sec-tareas" class="section">
+  <div class="card">
+    <div class="card-title">✅ División de tareas</div>
+    <div class="filter-row" id="filtros-tareas">
+      <button class="filter-btn active" onclick="filtrarT('todas',this)">Todas</button>
+      <button class="filter-btn" onclick="filtrarT('sam',this)">Sam</button>
+      <button class="filter-btn" onclick="filtrarT('gonza',this)">Gonza</button>
+      <button class="filter-btn" onclick="filtrarT('juntos',this)">Juntos</button>
+      <button class="filter-btn" onclick="filtrarT('pendiente',this)">Pendientes</button>
+      <button class="filter-btn" onclick="filtrarT('hecho',this)">Hechas ✓</button>
+    </div>
+    <div id="lista-tareas"><p style="font-size:13px;color:var(--text3);font-style:italic;">Cargando...</p></div>
+    <button class="btn-add" style="margin-top:12px;width:100%" onclick="abrirModal('modal-tarea',null,'tarea')">+ Agregar tarea</button>
+  </div>
+</div>
+
+<!-- RUTINAS -->
+<div id="sec-rutinas" class="section">
+  <div class="card">
+    <div class="card-title">🕐 Rutinas — Semana <span id="rutina-semana-num">24</span></div>
+    <p class="section-intro">Rutinas recomendadas para esta semana del embarazo.</p>
+    <div id="rutina-info"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">✏️ Rutinas personalizadas</div>
+    <div id="rutinas-custom"><p style="font-size:13px;color:var(--text3);font-style:italic;">Cargando...</p></div>
+    <div class="add-row">
+      <select id="rut-hora"><option>Madrugada (0–6hs)</option><option>Mañana (6–12hs)</option><option>Tarde (12–18hs)</option><option>Noche (18–24hs)</option></select>
+      <input type="text" id="rut-texto" placeholder="Describí la rutina...">
+      <button class="btn-add" onclick="agregarRutinaCustom()">+ Agregar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MUDANZA -->
+<div id="sec-mudanza" class="section">
+  <div class="mud-tabs">
+    <button class="mud-tab active" onclick="showMudTab('tareas-mud',this)">📋 Tareas</button>
+    <button class="mud-tab" onclick="showMudTab('presupuesto',this)">💰 Presupuesto</button>
+    <button class="mud-tab" onclick="showMudTab('inspiracion',this)">🎨 Inspiración</button>
+    <button class="mud-tab" onclick="showMudTab('notas-mud',this)">📝 Notas</button>
+  </div>
+  <div id="panel-tareas-mud" class="mud-panel active">
+    <div class="card">
+      <div class="card-title">📋 Tareas de mudanza</div>
+      <div class="filter-row" id="filtros-mud">
+        <button class="filter-btn active" onclick="filtrarMud('todas',this)">Todas</button>
+        <button class="filter-btn" onclick="filtrarMud('pendiente',this)">Pendiente</button>
+        <button class="filter-btn" onclick="filtrarMud('proceso',this)">En proceso</button>
+        <button class="filter-btn" onclick="filtrarMud('listo',this)">Listo ✓</button>
+      </div>
+      <div id="lista-mud"><p style="font-size:13px;color:var(--text3);font-style:italic;">Cargando...</p></div>
+      <button class="btn-add" style="margin-top:12px;width:100%" onclick="abrirModal('modal-mud',null,'mud')">+ Agregar tarea</button>
+    </div>
+  </div>
+  <div id="panel-presupuesto" class="mud-panel">
+    <div class="card">
+      <div class="card-title">💰 Presupuestos y proveedores</div>
+      <div id="lista-pres"><p style="font-size:13px;color:var(--text3);font-style:italic;">Cargando...</p></div>
+      <button class="btn-add" style="margin-top:12px;width:100%" onclick="abrirModal('modal-pres',null,'pres')">+ Agregar presupuesto</button>
+    </div>
+  </div>
+  <div id="panel-inspiracion" class="mud-panel">
+    <div class="card">
+      <div class="card-title">🎨 Planificación por ambiente</div>
+      <div class="ambiente-tabs" id="amb-tabs">
+        <button class="amb-btn active" onclick="showAmb('cocina',this)">Cocina</button>
+        <button class="amb-btn" onclick="showAmb('living',this)">Living</button>
+        <button class="amb-btn" onclick="showAmb('patio',this)">Patio</button>
+        <button class="amb-btn" onclick="showAmb('toilette',this)">Toilette</button>
+        <button class="amb-btn" onclick="showAmb('bano',this)">Baño principal</button>
+        <button class="amb-btn" onclick="showAmb('hab-principal',this)">Hab. principal</button>
+        <button class="amb-btn" onclick="showAmb('hab-olivia',this)">Hab. Olivia 🌼</button>
+        <button class="amb-btn" onclick="showAmb('balcon',this)">Balcón</button>
+      </div>
+      <div id="amb-panels"></div>
+    </div>
+  </div>
+  <div id="panel-notas-mud" class="mud-panel">
+    <div class="card">
+      <div class="card-title">📝 Notas de mudanza</div>
+      <textarea class="nota-box" id="nota-mudanza" placeholder="Contacto del fletero, medidas, decisiones pendientes..."></textarea>
+      <button class="btn-sm" style="margin-top:8px" onclick="guardarNota('mudanza','nota-mudanza')">💾 Guardar nota</button>
+    </div>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div id="sec-tips" class="section">
+  <div id="ctx-tips-box" style="display:none" class="card" style="border:1px solid var(--accent2);">
+    <div class="card-title">✨ Tips según lo que están cargando</div>
+    <div id="ctx-tips-lista"></div>
+  </div>
+  <div class="filter-row" id="filtros-tips">
+    <button class="filter-btn active" onclick="filtrarTips('todos',this)">Todos</button>
+    <button class="filter-btn" onclick="filtrarTips('embarazo',this)">Embarazo</button>
+    <button class="filter-btn" onclick="filtrarTips('crianza',this)">Crianza</button>
+    <button class="filter-btn" onclick="filtrarTips('deco',this)">Deco & Mudanza</button>
+    <button class="filter-btn" onclick="filtrarTips('custom',this)">Nuestros</button>
+  </div>
+  <div id="lista-tips"></div>
+  <div class="card" style="margin-top:1rem;">
+    <div class="card-title">✏️ Agregar tip propio</div>
+    <div class="add-row">
+      <input type="text" id="new-tip-text" placeholder="Tip o consejo..." style="flex:2">
+      <input type="text" id="new-tip-etq" placeholder="Etiqueta...">
+      <select id="new-tip-cat"><option value="embarazo">Embarazo</option><option value="crianza">Crianza</option><option value="deco">Deco & Mudanza</option><option value="custom">Nuestro</option></select>
+      <button class="btn-add" onclick="agregarTipCustom()">+ Guardar</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- .app -->
+</div><!-- .app-wrap -->
+
+<!-- MODALES -->
+<div class="modal-bg" id="modal-compra"><div class="modal">
+  <h3 id="mc-titulo">Agregar ítem</h3>
+  <div class="modal-row"><label>Nombre</label><input type="text" id="mc-nombre"></div>
+  <div class="modal-row"><label>Categoría</label><select id="mc-cat"><option value="indumentaria">Ropa / Indumentaria</option><option value="higiene">Higiene y cuidado</option><option value="hogar">Hogar / Paseo</option><option value="mama">Mamá</option><option value="otro">Otro</option></select></div>
+  <div class="modal-row"><label>Prioridad</label><select id="mc-prio"><option value="alto">⚠ Alta (urgente)</option><option value="medio">Media</option><option value="bajo" selected>Baja</option><option value="regalo">Posible regalo</option><option value="her">Heredado/prestado</option></select></div>
+  <div class="modal-row"><label>Precio estimado</label><input type="text" id="mc-precio" placeholder="$..."></div>
+  <div class="modal-row"><label>Link de compra</label><input type="url" id="mc-link" placeholder="https://..."></div>
+  <div class="modal-row"><label>Notas</label><textarea id="mc-notas"></textarea></div>
+  <div class="modal-row"><label>Estado</label><select id="mc-estado"><option value="pendiente">Pendiente</option><option value="finalizado">Finalizado ✓</option></select></div>
+  <div class="modal-actions"><button class="btn-cancel" onclick="cerrarModal('modal-compra')">Cancelar</button><button class="btn-add" onclick="guardarItem('compra')">💾 Guardar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-inv"><div class="modal">
+  <h3 id="mi-titulo">Agregar prenda</h3>
+  <div class="modal-row"><label>Tipo de prenda</label><input type="text" id="mi-prenda"></div>
+  <div class="modal-row"><label>Detalle</label><input type="text" id="mi-detalle"></div>
+  <div class="modal-row"><label>Cantidad</label><input type="number" id="mi-cant" value="1" min="1"></div>
+  <div class="modal-row"><label>Talle</label><input type="text" id="mi-talle" placeholder="RN, Talle 0, 1-3M..."></div>
+  <div class="modal-row"><label>Estación</label><select id="mi-estacion"><option>Media</option><option>Verano</option><option>Invierno</option></select></div>
+  <div class="modal-row"><label>Origen</label><select id="mi-origen"><option value="regalo">🎁 Regalo</option><option value="comprado">💳 Comprado</option></select></div>
+  <div class="modal-row"><label>De quién</label><input type="text" id="mi-de"></div>
+  <div class="modal-actions"><button class="btn-cancel" onclick="cerrarModal('modal-inv')">Cancelar</button><button class="btn-add" onclick="guardarItem('inv')">💾 Guardar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-tarea"><div class="modal">
+  <h3 id="mt-titulo">Agregar tarea</h3>
+  <div class="modal-row"><label>Tarea</label><input type="text" id="mt-nombre"></div>
+  <div class="modal-row"><label>Responsable</label><select id="mt-resp"><option value="sam">Sam</option><option value="gonza">Gonza</option><option value="juntos">Juntos</option></select></div>
+  <div class="modal-row"><label>Fecha objetivo</label><input type="date" id="mt-fecha"></div>
+  <div class="modal-row"><label>Prioridad</label><select id="mt-prio"><option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option></select></div>
+  <div class="modal-row"><label>Notas</label><textarea id="mt-notas"></textarea></div>
+  <div class="modal-actions"><button class="btn-cancel" onclick="cerrarModal('modal-tarea')">Cancelar</button><button class="btn-add" onclick="guardarItem('tarea')">💾 Guardar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-mud"><div class="modal">
+  <h3 id="mm-titulo">Agregar tarea de mudanza</h3>
+  <div class="modal-row"><label>Tarea</label><input type="text" id="mm-nombre"></div>
+  <div class="modal-row"><label>Categoría</label><select id="mm-cat"><option>Remodelación</option><option>Logística</option><option>Servicios</option><option>Trámites</option><option>Compras</option><option>Otro</option></select></div>
+  <div class="modal-row"><label>Estado</label><select id="mm-est"><option value="pendiente">Pendiente</option><option value="proceso">En proceso</option><option value="listo">Listo ✓</option></select></div>
+  <div class="modal-row"><label>Fecha objetivo</label><input type="date" id="mm-fecha"></div>
+  <div class="modal-row"><label>Responsable</label><select id="mm-resp"><option value="sam">Sam</option><option value="gonza">Gonza</option><option value="juntos">Juntos</option></select></div>
+  <div class="modal-row"><label>Notas</label><textarea id="mm-notas"></textarea></div>
+  <div class="modal-actions"><button class="btn-cancel" onclick="cerrarModal('modal-mud')">Cancelar</button><button class="btn-add" onclick="guardarItem('mud')">💾 Guardar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-pres"><div class="modal">
+  <h3>Agregar presupuesto / proveedor</h3>
+  <div class="modal-row"><label>Nombre / rubro</label><input type="text" id="mp-nombre" placeholder="Ej: Pintura, Carpintero..."></div>
+  <div class="modal-row"><label>Monto estimado</label><input type="text" id="mp-monto" placeholder="$..."></div>
+  <div class="modal-row"><label>Proveedor</label><input type="text" id="mp-prov"></div>
+  <div class="modal-row"><label>Contacto</label><input type="text" id="mp-contacto" placeholder="Tel, email..."></div>
+  <div class="modal-row"><label>Link / web</label><input type="url" id="mp-link" placeholder="https://..."></div>
+  <div class="modal-row"><label>Estado</label><select id="mp-est"><option value="pend">Pendiente cotización</option><option value="cont">Contactado</option><option value="ok">Confirmado ✓</option></select></div>
+  <div class="modal-row"><label>Notas</label><textarea id="mp-notas"></textarea></div>
+  <div class="modal-actions"><button class="btn-cancel" onclick="cerrarModal('modal-pres')">Cancelar</button><button class="btn-add" onclick="guardarItem('pres')">💾 Guardar</button></div>
+</div></div>
+
+<div class="modal-bg" id="modal-amb"><div class="modal">
+  <h3 id="modal-amb-titulo">Agregar referencia</h3>
+  <div class="modal-row"><label>Tipo</label><select id="ma-tipo" onchange="toggleAmbTipo()"><option value="link">Link (Pinterest, Instagram...)</option><option value="imagen">Imagen desde mi dispositivo</option><option value="nota">Nota de texto</option></select></div>
+  <div id="ma-link-row" class="modal-row"><label>URL</label><input type="url" id="ma-link" placeholder="https://..."></div>
+  <div id="ma-img-row" class="modal-row" style="display:none"><label>Subir imagen</label><input type="file" id="ma-file" accept="image/*"></div>
+  <div class="modal-row"><label>Nota</label><textarea id="ma-nota" placeholder="Colores, materiales, lo que te gustó..."></textarea></div>
+  <div class="modal-actions"><button class="btn-cancel" onclick="cerrarModal('modal-amb')">Cancelar</button><button class="btn-add" onclick="guardarRef()">💾 Guardar</button></div>
+</div></div>
+
+<div class="saving-indicator" id="saving-ind">💾 Guardado</div>
+<div class="undo-toast" id="undo-toast"><span id="undo-msg">Eliminado</span><button class="undo-btn" onclick="doUndo()">↩ Deshacer</button></div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCm9wSdLnIJTlXRJorHl6ofaVOGJeqAw7A",
+  authDomain: "olivia-app-1c891.firebaseapp.com",
+  projectId: "olivia-app-1c891",
+  storageBucket: "olivia-app-1c891.firebasestorage.app",
+  messagingSenderId: "403386995318",
+  appId: "1:403386995318:web:6213b4719aaf9baf874557"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+
+// ═══ AUTH ═══
+window.doLogin = async () => {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-error');
+  err.textContent = '';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    err.textContent = 'Email o contraseña incorrectos.';
+  }
+};
+
+window.doLogout = async () => {
+  await signOut(auth);
+};
+
+onAuthStateChanged(auth, user => {
+  if(user) {
+    document.getElementById('login-wrap').style.display = 'none';
+    document.getElementById('app-wrap').style.display = 'block';
+    initApp();
+  } else {
+    document.getElementById('login-wrap').style.display = 'flex';
+    document.getElementById('app-wrap').style.display = 'none';
+  }
+});
+
+// ═══ SAVE INDICATOR ═══
+function showSaved() {
+  const el = document.getElementById('saving-ind');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ═══ FIRESTORE HELPERS ═══
+async function saveDoc(col, id, data) {
+  await setDoc(doc(db, col, id), data, {merge: true});
+  showSaved();
+}
+async function addItem(col, data) {
+  const ref = await addDoc(collection(db, col), {...data, createdAt: Date.now()});
+  showSaved();
+  return ref.id;
+}
+async function updateItem(col, id, data) {
+  await updateDoc(doc(db, col, id), data);
+  showSaved();
+}
+async function deleteItem(col, id) {
+  await deleteDoc(doc(db, col, id));
+  showSaved();
+}
+async function getAll(col) {
+  const snap = await getDocs(collection(db, col));
+  return snap.docs.map(d => ({...d.data(), _id: d.id}));
+}
+
+// ═══ WEEK INFO ═══
+const weekInfo = {
+  4:{bebe:["Tamaño: semilla de amapola (1mm)","El embrión se está implantando","Se forman las capas germinales"],mama:["Posible retraso menstrual","Sensibilidad en los senos","Fatiga leve"],estudios:["Test de embarazo casero","Confirmar con análisis de sangre (BHCG)"],general:"¡Empieza todo! Esta semana el óvulo fertilizado termina de implantarse en el útero."},
+  8:{bebe:["Tamaño: frambuesa (1,6cm)","Corazón latiendo a 150-170 lpm","Se forman los rasgos faciales básicos"],mama:["Náuseas matutinas frecuentes","Cansancio intenso","Sensibilidad al olfato"],estudios:["Primera ecografía","Análisis de sangre completo"],general:"Las náuseas son señal de que todo funciona bien. Comé en pequeñas porciones frecuentes."},
+  12:{bebe:["Tamaño: ciruela (5,4cm)","Todos los órganos formados","Puede mover los dedos"],mama:["Náuseas empiezan a ceder","Útero sube al abdomen","Aumento de energía"],estudios:["Translucencia nucal (11-14 semanas)","Análisis de primer trimestre"],general:"¡Fin del primer trimestre! El riesgo de pérdida baja significativamente."},
+  16:{bebe:["Tamaño: aguacate (11,6cm)","Puede hacer muecas","Los oídos se están desarrollando"],mama:["Posibles primeros movimientos","Aumento de peso más notorio","Aumento de apetito"],estudios:["Ecografía morfológica (18-22 sem — ya agendarla)","Triple marcador si corresponde"],general:"Las semanas 16-20 son la época dorada del embarazo para muchas mamás."},
+  20:{bebe:["Tamaño: banana (16,5cm)","Se mueve activamente — ya se siente","Puede tragar líquido amniótico"],mama:["Movimientos fetales claros","Posible dolor de espalda leve","Ligeros calambres en piernas"],estudios:["Ecografía morfológica detallada","Puede verse el sexo claramente"],general:"La morfológica de esta semana revisa todos los órganos y estructura de Olivia."},
+  24:{bebe:["Tamaño: mazorca de maíz (30cm, ~600g)","Pulmones en desarrollo","Responde a sonidos y voz de mamá","Ciclos de sueño-vigilia establecidos"],mama:["Panza bien visible","Posibles hemorroides o varices","Calambres en piernas","Posible insomnio"],estudios:["Curva de glucosa (24-28 semanas)","Control obstétrico mensual"],general:"Olivia ya puede reconocer tu voz y la de Gonza. Háblale, pónele música."},
+  28:{bebe:["Tamaño: berenjena (37cm, ~1kg)","Ojos que se abren y cierran","Cerebro en desarrollo acelerado"],mama:["Empieza el tercer trimestre 🎉","Posible acidez y reflujo","Contracciones de Braxton-Hicks (normales)"],estudios:["Curva de glucosa si no se hizo","Control cada 2-3 semanas"],general:"¡Tercer trimestre! De acá en adelante las visitas serán más frecuentes. Arrancar el curso preparto."},
+  32:{bebe:["Tamaño: coco (42cm, ~1,7kg)","Uñas completamente formadas","Se posiciona cabeza abajo"],mama:["Falta de aire (útero presiona el diafragma)","Dificultad para dormir","Ansiedad y emoción creciente"],estudios:["Ecografía de crecimiento y posición","Estreptococo B (34-37 semanas)"],general:"Buen momento para visitar el hospital/clínica y armar la bolsa del parto."},
+  36:{bebe:["Tamaño: lechuga romana (47cm, ~2,6kg)","Pulmones maduros","Cabeza encajada en la pelvis"],mama:["Mayor presión pélvica","Contracciones más frecuentes","Nesting (ganas de ordenar todo)"],estudios:["Estreptococo B","Monitoreo fetal","Control semanal"],general:"¡Recta final! La bolsa tiene que estar lista. Si hay señales de trabajo de parto — llamar al médico."},
+  40:{bebe:["Tamaño: sandía (~51cm, ~3,4kg)","Completamente desarrollada","Lista para el mundo 🌼"],mama:["Contracciones de parto pueden empezar","Pérdida del tapón mucoso","Mucha emoción y ansiedad"],estudios:["Monitoreo fetal continuo","Evaluación del cuello del útero"],general:"¡La fecha! Es normal extenderse hasta la semana 42. El cuerpo sabe."}
+};
+function getWeekInfo(sem){const keys=Object.keys(weekInfo).map(Number).sort((a,b)=>a-b);let best=keys[0];for(const k of keys){if(k<=sem)best=k;}return weekInfo[best];}
+
+// ═══ RUTINAS POR ETAPA ═══
+const rutinasData = {
+  early:{bloques:[{hora:"Mañana",items:["Tomar ácido fólico con el desayuno","Hidratarse bien — 8 vasos por día","Evitar el ayuno prolongado"]},{hora:"Tarde",items:["Descanso cuando aparezca el cansancio","Paseo suave si hay energía"]},{hora:"Noche",items:["Acostarse temprano","Posición semi-recostada si hay acidez"]}]},
+  mid:{bloques:[{hora:"Mañana",items:["Aprovechar la energía del segundo trimestre","Ejercicio suave (yoga prenatal, caminata)","Aplicar crema para estrías"]},{hora:"Tarde",items:["Siesta corta si es necesario","Preparar lista de compras para la beba"]},{hora:"Noche",items:["Dormir del lado izquierdo","Estiramientos suaves para las piernas"]}]},
+  late:{bloques:[{hora:"Mañana",items:["Desayuno abundante antes de que aparezca la acidez","Revisar avance de la bolsa del hospital"]},{hora:"Tarde",items:["Descanso con las piernas elevadas","Clases de preparto o lectura sobre el parto"]},{hora:"Noche",items:["Almohada entre las rodillas para dormir cómoda","Técnicas de respiración para el parto"]}]},
+  final:{bloques:[{hora:"Mañana",items:["Bolsa lista y visible","Saber exactamente cómo llegar a la clínica"]},{hora:"Tarde",items:["Descanso máximo","Congelar comida si es posible"]},{hora:"Noche",items:["Teléfono cargado","Gonza con el auto listo y la ruta memorizada"]}]}
+};
+function getRutinaEtapa(sem){if(sem<=13)return rutinasData.early;if(sem<=27)return rutinasData.mid;if(sem<=35)return rutinasData.late;return rutinasData.final;}
+
+// ═══ TIPS BASE ═══
+const tipsBase = [
+  {texto:"Armá la bolsa del hospital con al menos 3 semanas de anticipación. Documentos, ropa para Sam, para Olivia, y lo esencial para Gonza.",cat:"embarazo",etq:"Antes del parto"},
+  {texto:"La butaca Graco Triride tiene que estar instalada y revisada antes de que nazca Olivia. Muchos hospitales no dejan salir sin ella.",cat:"embarazo",etq:"Antes del parto — Gonza"},
+  {texto:"Sam duerme cuando Olivia duerme. No importa si es de día o si la casa está desordenada. El descanso es prioridad absoluta.",cat:"crianza",etq:"Semanas 1–2"},
+  {texto:"La mamadera Lansinoh NaturalWave imita la teta y facilita la combinación pecho/biberón. Tenerla lista antes del parto.",cat:"crianza",etq:"Lactancia"},
+  {texto:"El set Baby Dove está recomendado porque otras marcas tienen ingredientes problemáticos. Sirve para cabello y piel hasta el año.",cat:"crianza",etq:"Higiene de Olivia"},
+  {texto:"Establecer turnos de noche por escrito desde el principio. La luz roja nocturna + ruido blanco ayuda mucho a que Olivia duerma más.",cat:"crianza",etq:"Noches"},
+  {texto:"Tener kit de cambio de pañales en más de un lugar de la casa. Ahorra muchísimo tiempo en los momentos más cansados.",cat:"crianza",etq:"Organización"},
+  {texto:"Si la mudanza se superpone con el postparto, delegar al máximo. La tarea de Sam esas semanas es recuperarse y cuidar a Olivia.",cat:"deco",etq:"Mudanza + postparto"},
+  {texto:"Ya tienen bastante ropa talle 1–3M de regalo. Comprar pocas cosas extra en talle RN — los bebés crecen muy rápido.",cat:"crianza",etq:"Ropa de Olivia"},
+  {texto:"Para el cuarto de Olivia, los verdes suaves, beiges y blancos son los más recomendados — tranquilos, versátiles y que no cansan.",cat:"deco",etq:"Hab. Olivia — deco"},
+  {texto:"Invertí en iluminación: luz ambiente suave (blanca cálida) y luz nocturna roja. La roja no interrumpe el sueño cuando hay que cambiarla de madrugada.",cat:"deco",etq:"Iluminación"},
+  {texto:"Pintá el cuarto de Olivia antes de mudarse — los olores de pintura necesitan al menos 2 semanas para disiparse bien.",cat:"deco",etq:"Pintura"},
+  {texto:"Para el dormitorio principal: cortinas blackout desde el principio. Van a agradecer dormir cuando Olivia duerme de día.",cat:"deco",etq:"Dormitorio principal"},
+  {texto:"Al elegir color de pared, probá la muestra en distintos momentos del día. La misma pintura se ve completamente diferente con luz natural vs artificial.",cat:"deco",etq:"Colores de pared"},
+  {texto:"Para pinturas: marcas como Sherwin-Williams, Alba o Synteko son de buena calidad en Argentina. Pedí la ficha técnica y verificá que sea apta para interiores y baja en COV (compuestos orgánicos volátiles).",cat:"deco",etq:"Marcas de pintura"},
+  {texto:"Al armar una paleta de colores para un ambiente, elegí un color dominante (60%), uno secundario (30%) y un acento (10%). Así el espacio queda equilibrado.",cat:"deco",etq:"Paleta de colores"}
+];
+
+// ═══ TIPS CONTEXTUALES ═══
+const ctxRules = [
+  {keywords:['pintura','color','pared','paleta'],tips:["Al elegir el color de una pared, probá la muestra en distintos momentos del día — la misma pintura se ve diferente con luz natural vs artificial.","Para ambientes pequeños, los colores claros y fríos dan sensación de amplitud. Para ambientes grandes, podés animar con colores más saturados.","Pedí siempre la ficha técnica de la pintura y verificá que sea apta para interiores y baja en COV (compuestos orgánicos volátiles), especialmente en la habitación de Olivia."]},
+  {keywords:['proveedor','presupuesto','cotización','carpintero','plomero','electricista'],tips:["Pedí siempre 3 presupuestos antes de contratar un proveedor. Las diferencias pueden ser enormes para el mismo trabajo.","Antes de contratar, buscá referencias de personas conocidas. El boca a boca sigue siendo el mejor filtro para proveedores de construcción.","Desconfiá de presupuestos que no especifican materiales incluidos. El precio bajo suele esconder costos extra después."]},
+  {keywords:['piso','porcellanato','cerámico','madera','vinílico'],tips:["El piso vinílico es una excelente opción para el cuarto de Olivia — fácil de limpiar, cálido al tacto y más económico que la madera.","Para living y pasillos, el porcellanato rectificado da un acabado limpio y es muy resistente. Pensá en el tráfico diario al elegir el mate vs brillante.","Al colocar piso nuevo, necesitás sumar el costo de materiales + mano de obra + traslado + un 10% extra por roturas. Siempre."]},
+  {keywords:['mueble','estante','placard','armario','cocina'],tips:["Antes de comprar muebles, medí el espacio tres veces. Fotografiá el ambiente con las medidas anotadas para comparar opciones.","Para el cuarto de bebé, priorizá muebles sin esquinas filosas y a baja altura. Lo que hoy es lindo, en 8 meses puede ser peligroso cuando Olivia empiece a moverse."]},
+  {keywords:['flete','mudanza','caja','embalaje'],tips:["Armá un inventario fotográfico de todo lo que metés en las cajas antes de sellarlas. Cuando llegues al nuevo lugar, agradecerás haberlo hecho.","Etiquetá las cajas con el ambiente de destino Y con el contenido principal. Así el fletero sabe dónde dejarla y vos sabés qué priorizar al abrir.","Para artículos frágiles, usá ropa vieja como amortiguador — es más efectivo que el papel de diario y ahorrás materiales."]}
+];
+
+function detectCtxTips(allData) {
+  const texto = JSON.stringify(allData).toLowerCase();
+  const tips = [];
+  for(const rule of ctxRules) {
+    if(rule.keywords.some(k => texto.includes(k))) {
+      tips.push(...rule.tips);
+    }
+  }
+  return [...new Set(tips)].slice(0, 5);
+}
+
+// ═══ AMBIENTES ═══
+const ambientes = ['cocina','living','patio','toilette','bano','hab-principal','hab-olivia','balcon'];
+const ambNombres = {cocina:'Cocina',living:'Living',patio:'Patio',toilette:'Toilette',bano:'Baño principal','hab-principal':'Hab. principal','hab-olivia':'Hab. Olivia 🌼',balcon:'Balcón'};
+let currentAmb = 'cocina';
+
+function initAmbPanels() {
+  const cont = document.getElementById('amb-panels');
+  cont.innerHTML = '';
+  ambientes.forEach(amb => {
+    const div = document.createElement('div');
+    div.className = 'amb-panel' + (amb === 'cocina' ? ' active' : '');
+    div.id = 'amb-' + amb;
+    div.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1rem;">
+        <div class="modal-row"><label>Color(es) pensados</label><textarea id="color-${amb}" oninput="ambData['${amb}'].color=this.value;checkCtx()" placeholder="Ej: verde oliva claro, blanco roto..." style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;min-height:60px;resize:vertical;"></textarea></div>
+        <div class="modal-row"><label>Arreglos / reformas</label><textarea id="arreglos-${amb}" oninput="ambData['${amb}'].arreglos=this.value;checkCtx()" placeholder="Ej: cambiar piso, pintar, instalar estante..." style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;min-height:60px;resize:vertical;"></textarea></div>
+        <div class="modal-row"><label>Decoración</label><textarea id="deco-${amb}" oninput="ambData['${amb}'].deco=this.value;checkCtx()" placeholder="Muebles, plantas, cuadros, iluminación..." style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;min-height:60px;resize:vertical;"></textarea></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:13px;font-weight:500;color:var(--text2)">Referencias e inspiración</div>
+        <button class="btn-add" style="padding:6px 12px;font-size:12px" onclick="currentAmb='${amb}';document.getElementById('modal-amb').classList.add('open')">+ Agregar referencia</button>
+      </div>
+      <div class="ref-grid" id="refs-${amb}"><p style="font-size:13px;color:var(--text3);font-style:italic;grid-column:1/-1">Sin referencias todavía.</p></div>
+      <button class="btn-sm done" style="margin-top:10px" onclick="guardarAmb('${amb}')">💾 Guardar ${ambNombres[amb]}</button>
+    `;
+    cont.appendChild(div);
+  });
+}
+
+window.showAmb = (amb, btn) => {
+  document.querySelectorAll('#amb-tabs .amb-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.amb-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('amb-' + amb).classList.add('active');
+  currentAmb = amb;
+};
+
+window.toggleAmbTipo = () => {
+  const t = document.getElementById('ma-tipo').value;
+  document.getElementById('ma-link-row').style.display = t === 'link' ? '' : 'none';
+  document.getElementById('ma-img-row').style.display = t === 'imagen' ? '' : 'none';
+};
+
+let ambData = {};
+ambientes.forEach(a => { ambData[a] = {color:'', arreglos:'', deco:'', refs:[]}; });
+
+window.guardarAmb = async (amb) => {
+  await saveDoc('ambientes', amb, ambData[amb]);
+};
+
+window.guardarRef = async () => {
+  const tipo = document.getElementById('ma-tipo').value;
+  const nota = document.getElementById('ma-nota').value.trim();
+  const grid = document.getElementById('refs-' + currentAmb);
+  const emp = grid.querySelector('p');
+  if(emp) emp.remove();
+
+  let refData = {tipo, nota, amb: currentAmb};
+
+  if(tipo === 'imagen') {
+    const file = document.getElementById('ma-file').files[0];
+    if(file) {
+      const reader = new FileReader();
+      reader.onload = async e => {
+        refData.data = e.target.result;
+        const id = await addItem('refs', refData);
+        renderRef({...refData, _id: id}, grid);
+      };
+      reader.readAsDataURL(file);
+    }
+  } else {
+    const link = document.getElementById('ma-link').value.trim();
+    if(!link && !nota) return;
+    refData.link = link;
+    const id = await addItem('refs', refData);
+    renderRef({...refData, _id: id}, grid);
+  }
+  cerrarModal('modal-amb');
+  checkCtx();
+};
+
+function renderRef(ref, grid) {
+  const card = document.createElement('div');
+  if(ref.tipo === 'imagen') {
+    card.className = 'ref-card';
+    card.innerHTML = `<img src="${ref.data}" alt="ref"><div class="ref-card-body"><div class="ref-card-note">${ref.nota||''}</div></div><button class="ref-card-del" onclick="borrarRef('${ref._id}',this)">🗑️</button>`;
+  } else if(ref.tipo === 'link') {
+    card.className = 'ref-link-item';
+    card.innerHTML = `<span>🔗</span><div style="flex:1"><a href="${ref.link}" class="link-ext" target="_blank">${ref.link}</a>${ref.nota?`<div class="ref-card-note">${ref.nota}</div>`:''}</div><button class="btn-sm del" onclick="borrarRef('${ref._id}',this)">🗑️</button>`;
+  } else {
+    card.className = 'tip-card';
+    card.style.marginBottom = '8px';
+    card.innerHTML = `<div class="tip-tag">Nota</div><p>${ref.nota}</p><button class="btn-sm del" style="margin-top:6px" onclick="borrarRef('${ref._id}',this)">🗑️</button>`;
+  }
+  grid.appendChild(card);
+}
+
+window.borrarRef = async (id, btn) => {
+  await deleteItem('refs', id);
+  btn.closest('.ref-card, .ref-link-item, .tip-card').remove();
+};
+
+// ═══ RENDER HELPERS ═══
+function showSavedBanner() { showSaved(); }
+
+// ═══ EMBARAZO ═══
+window.guardarEmbarazo = async () => {
+  const sem = parseInt(document.getElementById('inp-semana').value)||24;
+  const dias = parseInt(document.getElementById('inp-dias').value)||0;
+  const fpp = document.getElementById('inp-fpp').value;
+  await saveDoc('config', 'embarazo', {sem, dias, fpp});
+  updateEmbarazoUI(sem, dias, fpp);
+};
+
+function updateEmbarazoUI(sem, dias, fpp) {
+  const pct = Math.min(Math.round(((sem + dias/7)/40)*100), 100);
+  const rest = Math.max(0, 40-sem);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = `${sem} semanas + ${dias} días · Faltan ~${rest} semanas`;
+  document.getElementById('st-semanas').textContent = rest;
+  document.getElementById('st-dias').textContent = rest * 7;
+  document.getElementById('st-pct').textContent = pct + '%';
+  document.getElementById('st-fpp').textContent = fpp ? new Date(fpp+'T00:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long'}) : '—';
+  const b2 = document.getElementById('tb2'), b3 = document.getElementById('tb3');
+  if(sem<=13){b2.className='trim-badge b-pending';b3.className='trim-badge b-pending';}
+  else if(sem<=27){b2.className='trim-badge b-current';b3.className='trim-badge b-pending';}
+  else{b2.className='trim-badge b-done';b3.className='trim-badge b-current';}
+  document.getElementById('rutina-semana-num').textContent = sem;
+  renderWeekInfo(sem);
+  renderRutinaInfo(sem);
+}
+
+function renderWeekInfo(sem) {
+  const info = getWeekInfo(sem);
+  document.getElementById('wi-titulo').textContent = `Semana ${sem} — ¿Qué está pasando?`;
+  document.getElementById('wi-grid').innerHTML = `
+    <div class="week-info-block"><h4>👶 Olivia esta semana</h4><ul>${info.bebe.map(i=>`<li>${i}</li>`).join('')}</ul></div>
+    <div class="week-info-block"><h4>💚 Sam — síntomas posibles</h4><ul>${info.mama.map(i=>`<li>${i}</li>`).join('')}</ul></div>
+    <div class="week-info-block"><h4>🩺 Estudios de rutina</h4><ul>${info.estudios.map(i=>`<li>${i}</li>`).join('')}</ul></div>
+    <div class="week-info-block" style="grid-column:1/-1"><h4>ℹ️ Info general</h4><p style="font-size:12px;color:var(--text2);line-height:1.6">${info.general}</p></div>
+  `;
+}
+
+function renderRutinaInfo(sem) {
+  const r = getRutinaEtapa(sem);
+  document.getElementById('rutina-info').innerHTML = `<div class="rutina-grid">${r.bloques.map(b=>`<div><div class="rutina-hora">${b.hora}</div><ul class="rutina-lista">${b.items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`).join('')}</div>`;
+}
+
+// ═══ NOTAS ═══
+window.guardarNota = async (key, elId) => {
+  const val = document.getElementById(elId).value;
+  await saveDoc('notas', key, {texto: val, updated: Date.now()});
+};
+
+// ═══ TURNOS ═══
+let turnosData = [];
+window.agregarTurno = async () => {
+  const nombre = document.getElementById('new-turno').value.trim();
+  const fecha = document.getElementById('new-turno-fecha').value;
+  if(!nombre) return;
+  const id = await addItem('turnos', {nombre, fecha, estado:'pendiente'});
+  turnosData.push({_id:id, nombre, fecha, estado:'pendiente'});
+  renderTurnos();
+  document.getElementById('new-turno').value = '';
+  document.getElementById('new-turno-fecha').value = '';
+};
+
+function renderTurnos() {
+  const lista = document.getElementById('lista-turnos');
+  if(!turnosData.length){lista.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic;">Sin turnos cargados.</p>';return;}
+  const sorted = [...turnosData].sort((a,b)=>(a.fecha||'9999')>(b.fecha||'9999')?1:-1);
+  lista.innerHTML = sorted.map(t => {
+    const fStr = t.fecha ? new Date(t.fecha+'T00:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'}) : 'Sin fecha';
+    return `<div class="agenda-item">
+      <div class="agenda-fecha">${fStr}</div>
+      <div class="agenda-content">
+        <div class="agenda-nombre" style="${t.estado==='hecho'?'text-decoration:line-through;color:var(--text3)':''}">${t.nombre}</div>
+      </div>
+      <div class="agenda-actions">
+        ${t.fecha?`<button class="btn-sm cal" onclick="agregarACalendar('${t.nombre.replace(/'/g,"\'")}','${t.fecha}','Turno médico — Olivia')">📅</button>`:''}
+        ${t.estado!=='hecho'?`<button class="btn-sm done" onclick="marcarTurnoHecho('${t._id}')">✓</button>`:'<span class="btn-sm done">✓</span>'}
+        <button class="btn-sm del" onclick="borrarTurno('${t._id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.marcarTurnoHecho = async (id) => {
+  await updateItem('turnos', id, {estado:'hecho'});
+  turnosData.find(t=>t._id===id).estado = 'hecho';
+  renderTurnos();
+};
+window.borrarTurno = async (id) => {
+  await deleteItem('turnos', id);
+  turnosData = turnosData.filter(t=>t._id!==id);
+  renderTurnos();
+};
+
+// ═══ COMPRAS ═══
+let comprasData = [];
+let filtroC = 'todas';
+window.filtrarC = (f, btn) => { document.querySelectorAll('#filtros-compras .filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); filtroC=f; renderCompras(); };
+
+function renderCompras() {
+  const lista = document.getElementById('lista-compras');
+  const catMap={indumentaria:'Ropa',higiene:'Higiene',hogar:'Hogar',mama:'Mamá',otro:'Otro'};
+  const catCls={indumentaria:'pill-ind',higiene:'pill-hig',hogar:'pill-hog',mama:'pill-mam',otro:'pill-otr'};
+  const prioMap={alto:'<span style="font-size:11px;font-weight:500;color:var(--red)">⚠ Urgente</span>',medio:'<span style="font-size:11px;color:var(--yellow)">Media</span>',bajo:'<span style="font-size:11px;color:var(--green)">Baja</span>',regalo:'<span style="font-size:11px;color:var(--sam)">Regalo</span>',her:'<span style="font-size:11px;color:var(--gonza)">Heredado</span>'};
+  let vis=0;
+  const filtered = comprasData.filter(item => {
+    return filtroC==='todas'||(filtroC==='finalizado'&&item.estado==='finalizado')||(filtroC==='pendiente'&&item.estado==='pendiente')||(filtroC==='alto'&&item.prio==='alto')||(filtroC===item.cat);
+  });
+  if(!filtered.length){lista.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic;padding:1rem 0">Sin ítems con este filtro.</p>';document.getElementById('compras-ctr').textContent='';return;}
+  lista.innerHTML = filtered.map(item => {
+    const chk = item.estado==='finalizado';
+    return `<div class="compra-row">
+      <div class="compra-main">
+        <div class="c-check${chk?' checked':''}" onclick="toggleCompra('${item._id}')">${chk?'✓':''}</div>
+        <div class="c-body">
+          <div class="c-name${chk?' done':''}">${item.nombre}</div>
+          <div class="c-meta">
+            <span class="pill ${catCls[item.cat]||'pill-otr'}">${catMap[item.cat]||'Otro'}</span>
+            ${prioMap[item.prio]||''}
+            ${item.precio?`<span style="font-size:11px;color:var(--text2)">💰 ${item.precio}</span>`:''}
+            ${item.link?`<a href="${item.link}" class="link-ext" target="_blank">↗ Ver link</a>`:''}
+          </div>
+          ${item.notas?`<div class="c-note">📝 ${item.notas}</div>`:''}
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0;">
+          <button class="btn-sm edit" onclick="abrirModal('modal-compra','${item._id}','compra')">✏️</button>
+          <button class="btn-sm del" onclick="borrarCompra('${item._id}')">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  const fin = comprasData.filter(c=>c.estado==='finalizado').length;
+  document.getElementById('compras-ctr').textContent = `${fin} de ${comprasData.length} ítems listos`;
+}
+
+window.toggleCompra = async (id) => {
+  const item = comprasData.find(c=>c._id===id);
+  const nuevoEst = item.estado==='finalizado'?'pendiente':'finalizado';
+  await updateItem('compras', id, {estado: nuevoEst});
+  item.estado = nuevoEst;
+  renderCompras();
+};
+window.borrarCompra = async (id) => {
+  await deleteItem('compras', id);
+  comprasData = comprasData.filter(c=>c._id!==id);
+  renderCompras();
+};
+
+// ═══ INVENTARIO ═══
+let invData = [];
+let filtroI = 'todas';
+window.filtrarI = (f, btn) => { document.querySelectorAll('#filtros-inv .filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); filtroI=f; renderInv(); };
+
+function renderInv() {
+  const tbody = document.getElementById('inv-tbody');
+  const filtered = invData.filter(item => {
+    return filtroI==='todas'||(filtroI==='RN'&&item.talle.includes('RN'))||(filtroI==='1-3'&&item.talle.includes('1-3'))||(filtroI==='3-6'&&item.talle.includes('3-6'))||(filtroI===item.origen);
+  });
+  tbody.innerHTML = filtered.map(item => `
+    <tr>
+      <td style="font-weight:500">${item.prenda}</td>
+      <td style="color:var(--text2)">${item.detalle}</td>
+      <td style="text-align:center">${item.cant}</td>
+      <td><span class="talle-pill">${item.talle}</span></td>
+      <td style="font-size:12px;color:var(--text2)">${item.estacion}</td>
+      <td><span class="${item.origen==='regalo'?'orig-regalo':'orig-comprado'}">${item.origen==='regalo'?'🎁 Regalo':'💳 Comprado'}</span></td>
+      <td style="font-size:12px;color:var(--text2)">${item.de}</td>
+      <td style="white-space:nowrap">
+        <button class="btn-sm edit" onclick="abrirModal('modal-inv','${item._id}','inv')" style="margin-right:4px">✏️</button>
+        <button class="btn-sm del" onclick="borrarInv('${item._id}')">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+  const tot = invData.reduce((s,i)=>s+i.cant,0);
+  document.getElementById('inv-ctr').textContent = `${filtered.length} tipos · ${tot} prendas totales de Olivia`;
+}
+
+window.borrarInv = async (id) => {
+  await deleteItem('inventario', id);
+  invData = invData.filter(i=>i._id!==id);
+  renderInv();
+};
+
+// ═══ TAREAS ═══
+let tareasData = [];
+let filtroT = 'todas';
+window.filtrarT = (f, btn) => { document.querySelectorAll('#filtros-tareas .filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); filtroT=f; renderTareas(); };
+
+function renderTareas() {
+  const cont = document.getElementById('lista-tareas');
+  let filtered = tareasData.filter(t => {
+    if(filtroT==='sam') return t.resp==='sam';
+    if(filtroT==='gonza') return t.resp==='gonza';
+    if(filtroT==='juntos') return t.resp==='juntos';
+    if(filtroT==='pendiente') return t.estado==='pendiente';
+    if(filtroT==='hecho') return t.estado==='hecho';
+    return true;
+  });
+  filtered.sort((a,b)=>(a.fecha||'9999')>(b.fecha||'9999')?1:-1);
+  if(!filtered.length){cont.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic;padding:1rem 0">Sin tareas.</p>';return;}
+  const meses={};
+  filtered.forEach(t=>{
+    let mes='Sin fecha';
+    if(t.fecha){const d=new Date(t.fecha+'T00:00:00');mes=d.toLocaleDateString('es-AR',{month:'long',year:'numeric'});}
+    if(!meses[mes])meses[mes]=[];
+    meses[mes].push(t);
+  });
+  const respCls={sam:'resp-sam',gonza:'resp-gonza',juntos:'resp-juntos'};
+  const respLbl={sam:'Sam',gonza:'Gonza',juntos:'Juntos'};
+  cont.innerHTML = Object.entries(meses).map(([mes, items]) => `
+    <div class="agenda-mes">
+      <div class="agenda-mes-titulo">📅 ${mes.charAt(0).toUpperCase()+mes.slice(1)}</div>
+      ${items.map(t => {
+        const fStr = t.fecha?new Date(t.fecha+'T00:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'}):'Sin fecha';
+        return `<div class="agenda-item">
+          <div class="agenda-fecha">${fStr}</div>
+          <div class="agenda-content">
+            <div class="agenda-nombre" style="${t.estado==='hecho'?'text-decoration:line-through;color:var(--text3)':''}">${t.nombre}</div>
+            <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
+              <span class="resp-badge ${respCls[t.resp]}">${respLbl[t.resp]}</span>
+              ${t.notas?`<span style="font-size:11px;color:var(--text2)">📝 ${t.notas}</span>`:''}
+            </div>
+          </div>
+          <div class="agenda-actions">
+            ${t.fecha?`<button class="btn-sm cal" onclick="agregarACalendar('${t.nombre.replace(/'/g,"\'")}','${t.fecha}','${t.notas?t.notas.replace(/'/g,"\'"):''}')">📅</button>`:''}
+            ${t.estado!=='hecho'?`<button class="btn-sm done" onclick="marcarTareaHecha('${t._id}')">✓</button>`:''}
+            <button class="btn-sm edit" onclick="abrirModal('modal-tarea','${t._id}','tarea')">✏️</button>
+            <button class="btn-sm del" onclick="borrarTarea('${t._id}')">🗑️</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `).join('');
+}
+
+window.marcarTareaHecha = async (id) => {
+  await updateItem('tareas', id, {estado:'hecho'});
+  tareasData.find(t=>t._id===id).estado = 'hecho';
+  renderTareas();
+};
+window.borrarTarea = async (id) => {
+  await deleteItem('tareas', id);
+  tareasData = tareasData.filter(t=>t._id!==id);
+  renderTareas();
+};
+
+// ═══ MUDANZA TAREAS ═══
+let mudData = [];
+let filtroMud = 'todas';
+window.filtrarMud = (f, btn) => { document.querySelectorAll('#filtros-mud .filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); filtroMud=f; renderMud(); };
+
+function renderMud() {
+  const cont = document.getElementById('lista-mud');
+  const filtered = mudData.filter(t => filtroMud==='todas'||(filtroMud===t.est));
+  filtered.sort((a,b)=>(a.fecha||'9999')>(b.fecha||'9999')?1:-1);
+  if(!filtered.length){cont.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic;padding:1rem 0">Sin tareas.</p>';return;}
+  const meses={};
+  filtered.forEach(t=>{
+    let mes='Sin fecha';
+    if(t.fecha){const d=new Date(t.fecha+'T00:00:00');mes=d.toLocaleDateString('es-AR',{month:'long',year:'numeric'});}
+    if(!meses[mes])meses[mes]=[];
+    meses[mes].push(t);
+  });
+  const estCls={pendiente:'est-pend',proceso:'est-cont',listo:'est-ok'};
+  const estLbl={pendiente:'Pendiente',proceso:'En proceso',listo:'Listo ✓'};
+  cont.innerHTML = Object.entries(meses).map(([mes, items]) => `
+    <div class="agenda-mes">
+      <div class="agenda-mes-titulo">🏠 ${mes.charAt(0).toUpperCase()+mes.slice(1)}</div>
+      ${items.map(t => {
+        const fStr = t.fecha?new Date(t.fecha+'T00:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'}):'Sin fecha';
+        return `<div class="agenda-item">
+          <div class="agenda-fecha">${fStr}</div>
+          <div class="agenda-content">
+            <div class="agenda-nombre">${t.nombre}</div>
+            <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
+              <span class="pres-estado ${estCls[t.est]}">${estLbl[t.est]}</span>
+              <span class="pill pill-otr">${t.cat}</span>
+            </div>
+          </div>
+          <div class="agenda-actions">
+            <button class="btn-sm edit" onclick="abrirModal('modal-mud','${t._id}','mud')">✏️</button>
+            <button class="btn-sm del" onclick="borrarMud('${t._id}')">🗑️</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `).join('');
+}
+
+window.borrarMud = async (id) => {
+  await deleteItem('mudanza', id);
+  mudData = mudData.filter(t=>t._id!==id);
+  renderMud();
+};
+
+// ═══ PRESUPUESTO ═══
+let presData = [];
+function renderPres() {
+  const cont = document.getElementById('lista-pres');
+  if(!presData.length){cont.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic;">Sin presupuestos cargados.</p>';return;}
+  const estCls={pend:'est-pend',cont:'est-cont',ok:'est-ok'};
+  const estLbl={pend:'Pendiente cotización',cont:'Contactado',ok:'Confirmado ✓'};
+  cont.innerHTML = presData.map(p => `
+    <div class="pres-card">
+      <div class="pres-header"><span class="pres-nombre">${p.nombre}</span><span class="pres-monto">${p.monto||'$ —'}</span></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+        <span class="pres-estado ${estCls[p.est]}">${estLbl[p.est]}</span>
+        ${p.prov?`<span style="font-size:11px;color:var(--text2)">🏢 ${p.prov}</span>`:''}
+      </div>
+      ${p.contacto||p.link?`<div style="font-size:12px;color:var(--text2);margin-top:6px;">${p.contacto?'📞 '+p.contacto:''} ${p.link?`<a href="${p.link}" class="link-ext" target="_blank">↗ Link</a>`:''}</div>`:''}
+      ${p.notas?`<div class="c-note" style="margin-top:6px">📝 ${p.notas}</div>`:''}
+      <div style="display:flex;gap:5px;margin-top:8px;">
+        <button class="btn-sm edit" onclick="abrirModal('modal-pres','${p._id}','pres')">✏️</button>
+        <button class="btn-sm del" onclick="borrarPres('${p._id}')">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.borrarPres = async (id) => {
+  await deleteItem('presupuestos', id);
+  presData = presData.filter(p=>p._id!==id);
+  renderPres();
+  checkCtx();
+};
+
+// ═══ RUTINAS CUSTOM ═══
+let rutinasCustom = [];
+function renderRutinasCustom() {
+  const cont = document.getElementById('rutinas-custom');
+  if(!rutinasCustom.length){cont.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic;">Sin rutinas personalizadas.</p>';return;}
+  cont.innerHTML = rutinasCustom.map(r => `
+    <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--bg3);">
+      <span class="pill pill-hog" style="flex-shrink:0">${r.hora}</span>
+      <span style="flex:1;font-size:13px">${r.texto}</span>
+      <button class="btn-sm del" onclick="borrarRutinaCustom('${r._id}')">🗑️</button>
+    </div>
+  `).join('');
+}
+
+window.agregarRutinaCustom = async () => {
+  const hora = document.getElementById('rut-hora').value;
+  const texto = document.getElementById('rut-texto').value.trim();
+  if(!texto) return;
+  const id = await addItem('rutinas', {hora, texto});
+  rutinasCustom.push({_id:id, hora, texto});
+  renderRutinasCustom();
+  document.getElementById('rut-texto').value = '';
+};
+
+window.borrarRutinaCustom = async (id) => {
+  await deleteItem('rutinas', id);
+  rutinasCustom = rutinasCustom.filter(r=>r._id!==id);
+  renderRutinasCustom();
+};
+
+// ═══ TIPS ═══
+let tipsCustom = [];
+let filtroTips = 'todos';
+
+window.filtrarTips = (f, btn) => {
+  document.querySelectorAll('#filtros-tips .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); filtroTips=f; renderTips();
+};
+
+function renderTips() {
+  const cont = document.getElementById('lista-tips');
+  const all = [...tipsBase.map(t=>({...t,custom:false})), ...tipsCustom.map(t=>({...t,custom:true}))];
+  const filtered = all.filter(t => filtroTips==='todos'||(filtroTips==='custom'&&t.custom)||(filtroTips===t.cat));
+  cont.innerHTML = filtered.map((t,i) => `
+    <div class="tip-card${t.custom?' ctx':''}">
+      <div class="tip-tag">${t.etq}</div>
+      <p>${t.texto}</p>
+      ${t.custom?`<button class="btn-sm del" style="margin-top:6px" onclick="borrarTipCustom('${t._id}')">🗑️</button>`:''}
+    </div>
+  `).join('');
+}
+
+window.agregarTipCustom = async () => {
+  const texto = document.getElementById('new-tip-text').value.trim();
+  const etq = document.getElementById('new-tip-etq').value.trim()||'Nuestro';
+  const cat = document.getElementById('new-tip-cat').value;
+  if(!texto) return;
+  const id = await addItem('tips', {texto, etq, cat});
+  tipsCustom.push({_id:id, texto, etq, cat});
+  renderTips();
+  document.getElementById('new-tip-text').value='';
+  document.getElementById('new-tip-etq').value='';
+};
+
+window.borrarTipCustom = async (id) => {
+  await deleteItem('tips', id);
+  tipsCustom = tipsCustom.filter(t=>t._id!==id);
+  renderTips();
+};
+
+// ═══ TIPS CONTEXTUALES ═══
+function checkCtx() {
+  const allText = JSON.stringify({mudData, presData, ambData}).toLowerCase();
+  const tips = detectCtxTips({text: allText});
+  const box = document.getElementById('ctx-tips-box');
+  const lista = document.getElementById('ctx-tips-lista');
+  if(tips.length) {
+    box.style.display = '';
+    lista.innerHTML = tips.map(t => `<div class="tip-card ctx" style="margin-bottom:8px"><div class="tip-tag">✨ Tip automático</div><p>${t}</p></div>`).join('');
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+// ═══ MODAL UNIFICADO ═══
+let editIds = {compra:null, inv:null, tarea:null, mud:null, pres:null};
+
+window.abrirModal = (modalId, id, tipo) => {
+  editIds[tipo] = id;
+  const tituloMap = {compra:'mc-titulo', inv:'mi-titulo', tarea:'mt-titulo', mud:'mm-titulo'};
+  if(tituloMap[tipo]) {
+    document.getElementById(tituloMap[tipo]).textContent = id ? 'Editar' : 'Agregar';
+  }
+  if(id) {
+    const dataMap = {compra:comprasData, inv:invData, tarea:tareasData, mud:mudData, pres:presData};
+    const item = dataMap[tipo].find(x=>x._id===id);
+    if(item) {
+      const fieldMap = {
+        compra: {nombre:'mc-nombre',cat:'mc-cat',prio:'mc-prio',precio:'mc-precio',link:'mc-link',notas:'mc-notas',estado:'mc-estado'},
+        inv: {prenda:'mi-prenda',detalle:'mi-detalle',cant:'mi-cant',talle:'mi-talle',estacion:'mi-estacion',origen:'mi-origen',de:'mi-de'},
+        tarea: {nombre:'mt-nombre',resp:'mt-resp',fecha:'mt-fecha',prio:'mt-prio',notas:'mt-notas'},
+        mud: {nombre:'mm-nombre',cat:'mm-cat',est:'mm-est',fecha:'mm-fecha',resp:'mm-resp',notas:'mm-notas'},
+        pres: {nombre:'mp-nombre',monto:'mp-monto',prov:'mp-prov',contacto:'mp-contacto',link:'mp-link',est:'mp-est',notas:'mp-notas'}
+      };
+      Object.entries(fieldMap[tipo]).forEach(([key,elId]) => {
+        const el = document.getElementById(elId);
+        if(el) el.value = item[key]||'';
+      });
+    }
+  } else {
+    // limpiar campos
+    const clearMap = {
+      compra: ['mc-nombre','mc-precio','mc-link','mc-notas'],
+      inv: ['mi-prenda','mi-detalle','mi-talle','mi-de'],
+      tarea: ['mt-nombre','mt-fecha','mt-notas'],
+      mud: ['mm-nombre','mm-fecha','mm-notas'],
+      pres: ['mp-nombre','mp-monto','mp-prov','mp-contacto','mp-link','mp-notas']
+    };
+    (clearMap[tipo]||[]).forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  }
+  document.getElementById(modalId).classList.add('open');
+};
+
+window.guardarItem = async (tipo) => {
+  const getters = {
+    compra: () => ({nombre:document.getElementById('mc-nombre').value.trim(),cat:document.getElementById('mc-cat').value,prio:document.getElementById('mc-prio').value,precio:document.getElementById('mc-precio').value,link:document.getElementById('mc-link').value,notas:document.getElementById('mc-notas').value,estado:document.getElementById('mc-estado').value}),
+    inv: () => ({prenda:document.getElementById('mi-prenda').value.trim(),detalle:document.getElementById('mi-detalle').value,cant:parseInt(document.getElementById('mi-cant').value)||1,talle:document.getElementById('mi-talle').value,estacion:document.getElementById('mi-estacion').value,origen:document.getElementById('mi-origen').value,de:document.getElementById('mi-de').value}),
+    tarea: () => ({nombre:document.getElementById('mt-nombre').value.trim(),resp:document.getElementById('mt-resp').value,fecha:document.getElementById('mt-fecha').value,prio:document.getElementById('mt-prio').value,notas:document.getElementById('mt-notas').value,estado:'pendiente'}),
+    mud: () => ({nombre:document.getElementById('mm-nombre').value.trim(),cat:document.getElementById('mm-cat').value,est:document.getElementById('mm-est').value,fecha:document.getElementById('mm-fecha').value,resp:document.getElementById('mm-resp').value,notas:document.getElementById('mm-notas').value}),
+    pres: () => ({nombre:document.getElementById('mp-nombre').value.trim(),monto:document.getElementById('mp-monto').value,prov:document.getElementById('mp-prov').value,contacto:document.getElementById('mp-contacto').value,link:document.getElementById('mp-link').value,est:document.getElementById('mp-est').value,notas:document.getElementById('mp-notas').value})
+  };
+  const colMap = {compra:'compras',inv:'inventario',tarea:'tareas',mud:'mudanza',pres:'presupuestos'};
+  const dataMap = {compra:comprasData,inv:invData,tarea:tareasData,mud:mudData,pres:presData};
+  const renderMap = {compra:renderCompras,inv:renderInv,tarea:renderTareas,mud:renderMud,pres:renderPres};
+  const modalMap = {compra:'modal-compra',inv:'modal-inv',tarea:'modal-tarea',mud:'modal-mud',pres:'modal-pres'};
+
+  const data = getters[tipo]();
+  const nameKey = tipo==='inv'?'prenda':'nombre';
+  if(!data[nameKey]) return;
+
+  const editId = editIds[tipo];
+  if(editId) {
+    await updateItem(colMap[tipo], editId, data);
+    const idx = dataMap[tipo].findIndex(x=>x._id===editId);
+    if(idx>=0) dataMap[tipo][idx] = {...dataMap[tipo][idx], ...data};
+  } else {
+    const id = await addItem(colMap[tipo], data);
+    dataMap[tipo].push({...data, _id:id});
+  }
+  cerrarModal(modalMap[tipo]);
+  renderMap[tipo]();
+  checkCtx();
+};
+
+// ═══ UTILS ═══
+window.cerrarModal = (id) => { document.getElementById(id).classList.remove('open'); };
+window.showSection = (id) => {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='tips') checkCtx();
+};
+window.showMudTab = (tab, btn) => {
+  document.querySelectorAll('.mud-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.mud-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+};
+document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+// ═══ INIT ═══
+async function initApp() {
+  initAmbPanels();
+
+  // Cargar config embarazo
+  const embDoc = await getDoc(doc(db, 'config', 'embarazo'));
+  if(embDoc.exists()) {
+    const d = embDoc.data();
+    document.getElementById('inp-semana').value = d.sem||24;
+    document.getElementById('inp-dias').value = d.dias||0;
+    document.getElementById('inp-fpp').value = d.fpp||'';
+    updateEmbarazoUI(d.sem||24, d.dias||0, d.fpp||'');
+  } else {
+    updateEmbarazoUI(24, 0, '');
+  }
+
+  // Cargar notas
+  const notaEmb = await getDoc(doc(db, 'notas', 'embarazo'));
+  if(notaEmb.exists()) document.getElementById('nota-embarazo').value = notaEmb.data().texto||'';
+  const notaMud = await getDoc(doc(db, 'notas', 'mudanza'));
+  if(notaMud.exists()) document.getElementById('nota-mudanza').value = notaMud.data().texto||'';
+
+  // Cargar colecciones
+  turnosData = await getAll('turnos'); renderTurnos();
+  comprasData = await getAll('compras');
+  // Cargar datos iniciales de compras si está vacío
+  if(!comprasData.length) {
+    const inicial = [
+      {nombre:"Body Ardillitas + Set Salchi",cat:"indumentaria",prio:"bajo",precio:"$32.000",link:"",notas:"Llegó el 9/4. Lo compró Gonza",estado:"finalizado"},
+      {nombre:"Baby Call Gadnic CAMBEB48",cat:"higiene",prio:"medio",precio:"$70.700",link:"",notas:"Comprado el 3/4",estado:"finalizado"},
+      {nombre:"Almohada de embarazo",cat:"mama",prio:"bajo",precio:"$49.500",link:"",notas:"",estado:"finalizado"},
+      {nombre:"Bañadera plegable Avanti Fresh + reductor + termómetro",cat:"higiene",prio:"bajo",precio:"",link:"",notas:"",estado:"finalizado"},
+      {nombre:"Cuna / cama / colecho",cat:"hogar",prio:"her",precio:"Heredado",link:"",notas:"Nos lo prestaría Cami — confirmar",estado:"pendiente"},
+      {nombre:"Lima de uñas eléctrica",cat:"higiene",prio:"her",precio:"Heredado",link:"",notas:"Nos lo daría Cami — confirmar",estado:"pendiente"},
+      {nombre:"Remera SL",cat:"indumentaria",prio:"bajo",precio:"",link:"",notas:"Responsabilidad de Gonza",estado:"pendiente"},
+      {nombre:"Mamadera Lansinoh NaturalWave",cat:"higiene",prio:"bajo",precio:"",link:"",notas:"Modelo recomendado por Cami",estado:"pendiente"},
+      {nombre:"Chupete Avent Soothie 0–6m (pack x2)",cat:"higiene",prio:"bajo",precio:"",link:"https://articulo.mercadolibre.com.ar/MLA-1142543099",notas:"Modelo recomendado por Cami",estado:"pendiente"},
+      {nombre:"Asiento auto convertible Graco Triride",cat:"hogar",prio:"alto",precio:"$706.000",link:"",notas:"⚠ Sin esto no salen del hospital",estado:"pendiente"},
+      {nombre:"Bolso/mochila maternal",cat:"otro",prio:"medio",precio:"",link:"",notas:"",estado:"pendiente"},
+      {nombre:"Bolsa para dormir",cat:"otro",prio:"bajo",precio:"",link:"",notas:"Lo compra Sam",estado:"pendiente"},
+      {nombre:"Luz roja nocturna + ruido blanco",cat:"hogar",prio:"bajo",precio:"",link:"",notas:"",estado:"pendiente"},
+      {nombre:"Fular (Monada Little Stuff)",cat:"hogar",prio:"regalo",precio:"",link:"https://www.instagram.com/monada.littlestuff",notas:"Regalo posible",estado:"pendiente"},
+      {nombre:"Almohadón de lactancia",cat:"mama",prio:"bajo",precio:"",link:"",notas:"",estado:"pendiente"},
+      {nombre:"Set Baby Dove (shampoo + jabón líquido)",cat:"higiene",prio:"bajo",precio:"",link:"",notas:"Sirve hasta el año. No usar otras marcas. Dato de Cami.",estado:"pendiente"}
+    ];
+    for(const item of inicial) {
+      const id = await addItem('compras', item);
+      comprasData.push({...item, _id:id});
+    }
+  }
+  renderCompras();
+
+  invData = await getAll('inventario');
+  if(!invData.length) {
+    const invInicial = [
+      {prenda:"Pantalón",detalle:"Largo color lila",cant:1,talle:"3-6 M",estacion:"Media",origen:"regalo",de:"Felix y Li"},
+      {prenda:"Conjunto 3 prendas",detalle:"Calza + reme + gorro (blanco c/ estampa)",cant:1,talle:"RN",estacion:"Media",origen:"regalo",de:"Felix y Li"},
+      {prenda:"Abrigo",detalle:"Con capucha floreada",cant:1,talle:"3-6 M",estacion:"Media",origen:"regalo",de:"Felix y Li"},
+      {prenda:"Body",detalle:"Manga larga (blanco + verde + beige)",cant:3,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Cami y Mati (G)"},
+      {prenda:"Pantalón",detalle:"Largo (blanco + verde + beige)",cant:3,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Cami y Mati (G)"},
+      {prenda:"Body c/ pantalón",detalle:"Manga larga (blanco x2 + beige)",cant:3,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Ale y Richard"},
+      {prenda:"Conjunto 3 prendas",detalle:"Body + calza + abrigo (perritos)",cant:1,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Ale y Richard"},
+      {prenda:"Conjunto 3 prendas",detalle:"Calza + reme + gorro (blanco)",cant:1,talle:"Talle 1",estacion:"Media",origen:"regalo",de:"Ale y Richard"},
+      {prenda:"Conjunto 2 prendas",detalle:"Body + abrigo (crema c/ bordado)",cant:1,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Ale y Richard"},
+      {prenda:"Conjunto 3 prendas",detalle:"Calza + saquito + gorro (salchis)",cant:1,talle:"Talle 0",estacion:"Media",origen:"comprado",de:"Gonza"},
+      {prenda:"Body",detalle:"Estampa ardillitas",cant:1,talle:"Talle 1",estacion:"Media",origen:"comprado",de:"Gonza"},
+      {prenda:"Body",detalle:"Rosa liso",cant:1,talle:"Talle 0",estacion:"Media",origen:"regalo",de:"Marino (Lili)"},
+      {prenda:"Conjunto 3 prendas",detalle:"Camperita polar + gorrito + medias (rosa)",cant:1,talle:"Talle 0",estacion:"Invierno",origen:"regalo",de:"Marino (Lili)"},
+      {prenda:"Ojotas",detalle:"Winnie Pooh (para +1 año)",cant:1,talle:"+1 año",estacion:"Verano",origen:"regalo",de:"Mati y Cami (S)"},
+      {prenda:"Body c/ pantalón",detalle:"Rosa claro flores + fucsia con moño",cant:1,talle:"Talle 0",estacion:"Media",origen:"regalo",de:"La Silvi"}
+    ];
+    for(const item of invInicial) {
+      const id = await addItem('inventario', item);
+      invData.push({...item, _id:id});
+    }
+  }
+  renderInv();
+
+  tareasData = await getAll('tareas');
+  if(!tareasData.length) {
+    const tareasIni = [
+      {nombre:"Preparar el cuarto de Olivia",resp:"juntos",fecha:"2025-08-01",prio:"alta",notas:"",estado:"pendiente"},
+      {nombre:"Armar la bolsa para el hospital",resp:"sam",fecha:"2025-08-15",prio:"alta",notas:"",estado:"pendiente"},
+      {nombre:"Instalar butaca Graco en el auto",resp:"gonza",fecha:"2025-08-10",prio:"alta",notas:"Sin esto no pueden salir del hospital",estado:"pendiente"},
+      {nombre:"Confirmar cuna/colecho con Cami",resp:"juntos",fecha:"2025-07-15",prio:"alta",notas:"",estado:"pendiente"},
+      {nombre:"Gestionar licencia por maternidad",resp:"sam",fecha:"2025-07-20",prio:"alta",notas:"",estado:"pendiente"},
+      {nombre:"Gestionar licencia por paternidad",resp:"gonza",fecha:"2025-07-20",prio:"alta",notas:"",estado:"pendiente"},
+      {nombre:"Visitar el hospital/clínica de parto",resp:"juntos",fecha:"2025-07-25",prio:"media",notas:"",estado:"pendiente"},
+      {nombre:"Comprar mamadera Lansinoh NaturalWave",resp:"juntos",fecha:"2025-08-01",prio:"media",notas:"Recomendada por Cami",estado:"pendiente"},
+      {nombre:"Comprar chupete Avent Soothie 0–6m x2",resp:"juntos",fecha:"2025-08-01",prio:"media",notas:"Recomendado por Cami",estado:"pendiente"}
+    ];
+    for(const t of tareasIni) {
+      const id = await addItem('tareas', t);
+      tareasData.push({...t, _id:id});
+    }
+  }
+  renderTareas();
+
+  mudData = await getAll('mudanza');
+  if(!mudData.length) {
+    const mudIni = [
+      {nombre:"Pintar el cuarto de Olivia",cat:"Remodelación",est:"pendiente",fecha:"2025-08-01",resp:"juntos",notas:""},
+      {nombre:"Conseguir flete / empresa de mudanza",cat:"Logística",est:"pendiente",fecha:"2025-07-20",resp:"gonza",notas:""},
+      {nombre:"Arreglos y refacciones prioritarias",cat:"Remodelación",est:"pendiente",fecha:"2025-07-30",resp:"juntos",notas:""},
+      {nombre:"Dar de baja/alta servicios (luz, gas, internet)",cat:"Servicios",est:"pendiente",fecha:"2025-08-05",resp:"gonza",notas:""},
+      {nombre:"Actualizar domicilio en documentos",cat:"Trámites",est:"pendiente",fecha:"2025-08-15",resp:"sam",notas:""}
+    ];
+    for(const t of mudIni) {
+      const id = await addItem('mudanza', t);
+      mudData.push({...t, _id:id});
+    }
+  }
+  renderMud();
+
+  presData = await getAll('presupuestos'); renderPres();
+  rutinasCustom = await getAll('rutinas'); renderRutinasCustom();
+  tipsCustom = await getAll('tips'); renderTips();
+
+  // Cargar ambientes
+  for(const amb of ambientes) {
+    const ambDoc = await getDoc(doc(db, 'ambientes', amb));
+    if(ambDoc.exists()) {
+      ambData[amb] = {...ambData[amb], ...ambDoc.data()};
+      const colorEl = document.getElementById('color-'+amb);
+      const arreglosEl = document.getElementById('arreglos-'+amb);
+      const decoEl = document.getElementById('deco-'+amb);
+      if(colorEl) colorEl.value = ambData[amb].color||'';
+      if(arreglosEl) arreglosEl.value = ambData[amb].arreglos||'';
+      if(decoEl) decoEl.value = ambData[amb].deco||'';
+    }
+  }
+
+  // Cargar refs de ambientes
+  const refs = await getAll('refs');
+  refs.forEach(ref => {
+    const grid = document.getElementById('refs-'+ref.amb);
+    if(grid) {
+      const emp = grid.querySelector('p');
+      if(emp) emp.remove();
+      renderRef(ref, grid);
+    }
+  });
+}
+
+window.detectCtxTips = detectCtxTips;
+</script>
+</body>
+</html>
