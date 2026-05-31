@@ -215,10 +215,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 <!-- APP -->
 <div class="app-wrap" id="app-wrap">
 <div class="site-header">
-  <button class="logout-btn" style="position:absolute;top:0.75rem;left:0.75rem;background:rgba(255,255,255,0.1);font-size:11px" onclick="descargarBackup()">⬇️ Backup</button>
   <h1>Olivia 🌼</h1>
   <p>Centro de comando — Sam & Gonza</p>
-  <button class="logout-btn" style="position:absolute;top:0.75rem;right:0.75rem;background:rgba(255,255,255,0.2)" onclick="doLogout()">Salir</button>
+  <button class="logout-btn" onclick="doLogout()">Salir</button>
 </div>
 <div class="nav-wrap">
   <div class="nav">
@@ -438,6 +437,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 </div>
 
 </div><!-- .app -->
+<div style="background:var(--accent-dark);padding:1rem 1.5rem;display:flex;justify-content:center;gap:12px;align-items:center;">
+  <button onclick="descargarBackup()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:8px 18px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">⬇️ Descargar backup</button>
+</div>
 </div><!-- .app-wrap -->
 
 <!-- MODALES -->
