@@ -164,7 +164,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 .amb-panel{display:none;}.amb-panel.active{display:block;}
 .ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px;}
 .ref-card{background:var(--bg2);border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);position:relative;}
-.ref-card img{width:100%;height:110px;object-fit:cover;display:block;}
+.ref-card img{width:100%;height:130px;object-fit:contain;background:var(--bg2);display:block;border-radius:var(--radius-sm) var(--radius-sm) 0 0;}
 .ref-card-body{padding:8px;}
 .ref-card-note{font-size:11px;color:var(--text2);}
 .ref-card-del{position:absolute;top:4px;right:4px;background:rgba(255,255,255,0.9);border:none;border-radius:4px;padding:3px 7px;font-size:13px;cursor:pointer;}
@@ -217,7 +217,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 <div class="site-header">
   <h1>Olivia 🌼</h1>
   <p>Centro de comando — Sam & Gonza</p>
-  <div style="position:absolute;top:1rem;right:1rem;display:flex;gap:8px;align-items:center;"><button class="logout-btn" onclick="descargarBackup()" style="background:rgba(255,255,255,0.1)">⬇️ Backup</button><button class="logout-btn" onclick="doLogout()">Salir</button></div>
+  <div style="position:absolute;top:0.75rem;right:0.75rem;display:flex;flex-direction:column;gap:5px;align-items:flex-end;"><button class="logout-btn" onclick="doLogout()" style="background:rgba(255,255,255,0.2)">Salir</button><button class="logout-btn" onclick="descargarBackup()" style="background:rgba(255,255,255,0.1);font-size:11px">⬇️ Backup</button></div>
 </div>
 <div class="nav-wrap">
   <div class="nav">
@@ -528,6 +528,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
     </div>
   </div>
 </div>
+<div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:3000;align-items:center;justify-content:center;cursor:zoom-out" onclick="cerrarLightbox()">
+  <img id="lightbox-img" src="" style="max-width:95vw;max-height:95vh;object-fit:contain;border-radius:8px">
+</div>
 <div class="saving-indicator" id="saving-ind">💾 Guardado</div>
 
 <!-- FIREBASE -->
@@ -781,7 +784,8 @@ function renderRef(ref, grid) {
   if(ref.tipo === 'imagen') {
     card.className = 'ref-card';
     card.setAttribute('data-ref-id', ref._id);
-    card.innerHTML = `<img src="${ref.data}" alt="referencia" loading="lazy"><div class="ref-card-body"><div class="ref-card-note">${ref.nota||''}</div></div><button class="ref-card-del" onclick="borrarRefBtn('${ref._id}',this)">🗑️</button>`;
+    card.innerHTML = `<img src="${ref.data}" alt="referencia" loading="lazy" style="cursor:zoom-in" onclick="abrirLightbox('${ref._id}')" title="Clic para ver en grande"><div class="ref-card-body"><div class="ref-card-note">${ref.nota||''}</div></div><button class="ref-card-del" onclick="borrarRefBtn('${ref._id}',this)">🗑️</button>`;
+    card._imgData = ref.data;
   } else if(ref.tipo === 'link') {
     card.className = 'ref-link-item';
     card.setAttribute('data-ref-id', ref._id);
@@ -880,21 +884,24 @@ function renderTurnos() {
   lista.innerHTML = sorted.map(t => {
     const fStr = t.fecha ? new Date(t.fecha+'T00:00:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'long'}) : 'Sin fecha';
     const horaStr = t.hora ? ` · ${t.hora}hs` : '';
+    const isDone = t.estado === 'hecho';
     const calDesc = [t.profesional,t.direccion,t.os,t.notas].filter(Boolean).join(' | ');
-    return `<div class="agenda-item" style="${t.estado==='hecho'?'opacity:0.6':''}">
-      <div class="agenda-fecha" style="min-width:80px">${fStr}${horaStr}</div>
-      <div class="agenda-content">
-        <div class="agenda-nombre" style="${t.estado==='hecho'?'text-decoration:line-through;color:var(--text3)':'font-weight:500'}">${t.nombre}</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;">
-          ${t.profesional?`<span style="font-size:11px;color:var(--text2)">👩‍⚕️ ${t.profesional}</span>`:''}
-          ${t.direccion?`<span style="font-size:11px;color:var(--text2)">📍 ${t.direccion}</span>`:''}
-          ${t.os?`<span style="font-size:11px;color:var(--text2)">🏥 ${t.os}</span>`:''}
+    return `<div class="agenda-item" style="${isDone?'opacity:0.6':''}">
+      <div style="display:flex;align-items:flex-start;gap:10px;flex:1;">
+        <div class="c-check${isDone?' checked':''}" style="margin-top:2px;flex-shrink:0;cursor:pointer" onclick="marcarTurnoHecho('${t._id}')">${isDone?'✓':''}</div>
+        <div style="flex:1">
+          <div style="font-weight:500;font-size:13px;${isDone?'text-decoration:line-through;color:var(--text3)':''}">${t.nombre}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">${fStr}${horaStr}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;">
+            ${t.profesional?`<span style="font-size:11px;color:var(--text2)">👩‍⚕️ ${t.profesional}</span>`:''}
+            ${t.direccion?`<span style="font-size:11px;color:var(--text2)">📍 ${t.direccion}</span>`:''}
+            ${t.os?`<span style="font-size:11px;color:var(--text2)">🏥 ${t.os}</span>`:''}
+          </div>
+          ${t.notas?`<div style="font-size:11px;color:var(--text2);margin-top:2px">📝 ${t.notas}</div>`:''}
         </div>
-        ${t.notas?`<div style="font-size:11px;color:var(--text2);margin-top:2px">📝 ${t.notas}</div>`:''}
       </div>
-      <div class="agenda-actions" style="flex-direction:column;gap:5px;align-items:flex-end">
-        ${t.fecha?`<button class="btn-sm cal" style="font-size:11px;white-space:normal;text-align:center" onclick="agregarACalendar('${t.nombre.replace(/'/g,"\'")}','${t.fecha}','${calDesc.replace(/'/g,"\'")}')">📅 Agregar a Google Calendar</button>`:''}
-        ${t.estado!=='hecho'?`<button class="btn-sm done" onclick="marcarTurnoHecho('${t._id}')">✓ Completado</button>`:'<span class="btn-sm done">✓ Realizado</span>'}
+      <div class="agenda-actions" style="flex-direction:column;gap:5px;align-items:flex-end;margin-left:8px">
+        ${t.fecha?`<button class="btn-sm cal" style="font-size:11px;white-space:nowrap" onclick="agregarACalendar('${t.nombre.replace(/'/g,"\'")}','${t.fecha}','${calDesc.replace(/'/g,"\'")}')">📅 Google Cal</button>`:''}
         <div style="display:flex;gap:5px">
           <button class="btn-sm edit" onclick="abrirModal('modal-turno','${t._id}','turno')">✏️</button>
           <button class="btn-sm del" onclick="borrarTurno('${t._id}')">🗑️</button>
@@ -904,16 +911,35 @@ function renderTurnos() {
   }).join('');
 }
 
+
+// ═══ CONFIRM DELETE ═══
+let confirmFn = null;
+window.cerrarConfirm = () => { document.getElementById('confirm-bg').classList.remove('open'); confirmFn = null; };
+window.ejecutarConfirm = async () => { if(confirmFn) { await confirmFn(); } cerrarConfirm(); };
+function confirmarEliminar(msg, fn) {
+  document.getElementById('confirm-msg').textContent = msg || '¿Seguro que querés eliminarlo?';
+  confirmFn = fn;
+  document.getElementById('confirm-bg').classList.add('open');
+}
+
+// ═══ ANTI DOUBLE SUBMIT ═══
+let _saving = false;
+function debounceGuardar(fn) {
+  if(_saving) return;
+  _saving = true;
+  setTimeout(()=>_saving=false, 1500);
+  fn();
+}
+
 window.marcarTurnoHecho = async (id) => {
-  await updateItem('turnos', id, {estado:'hecho'});
-  turnosData.find(t=>t._id===id).estado = 'hecho';
+  const t = turnosData.find(x=>x._id===id);
+  if(!t) return;
+  const nuevo = t.estado === 'hecho' ? 'pendiente' : 'hecho';
+  await updateItem('turnos', id, {estado: nuevo});
+  t.estado = nuevo;
   renderTurnos();
 };
-window.borrarTurno = async (id) => {
-  await deleteItem('turnos', id);
-  turnosData = turnosData.filter(t=>t._id!==id);
-  renderTurnos();
-};
+window.borrarTurno = (id) => confirmarEliminar('¿Eliminás este turno?', async () => { await deleteItem('turnos', id); turnosData = turnosData.filter(t=>t._id!==id); renderTurnos(); });
 
 // ═══ COMPRAS ═══
 let comprasData = [];
@@ -963,11 +989,7 @@ window.toggleCompra = async (id) => {
   item.estado = nuevoEst;
   renderCompras();
 };
-window.borrarCompra = async (id) => {
-  await deleteItem('compras', id);
-  comprasData = comprasData.filter(c=>c._id!==id);
-  renderCompras();
-};
+window.borrarCompra = (id) => confirmarEliminar('¿Eliminás este ítem?', async () => { await deleteItem('compras', id); comprasData = comprasData.filter(c=>c._id!==id); renderCompras(); });
 
 // ═══ INVENTARIO ═══
 let invData = [];
@@ -998,11 +1020,7 @@ function renderInv() {
   document.getElementById('inv-ctr').textContent = `${filtered.length} tipos · ${tot} prendas totales de Olivia`;
 }
 
-window.borrarInv = async (id) => {
-  await deleteItem('inventario', id);
-  invData = invData.filter(i=>i._id!==id);
-  renderInv();
-};
+window.borrarInv = (id) => confirmarEliminar('¿Eliminás esta prenda?', async () => { await deleteItem('inventario', id); invData = invData.filter(i=>i._id!==id); renderInv(); });
 
 // ═══ TAREAS ═══
 let tareasData = [];
@@ -1015,7 +1033,7 @@ function renderTareas() {
     if(filtroT==='sam') return t.resp==='sam';
     if(filtroT==='gonza') return t.resp==='gonza';
     if(filtroT==='juntos') return t.resp==='juntos';
-    if(filtroT==='pendiente') return t.estado==='pendiente';
+    if(filtroT==='pendiente') return t.estado!=='hecho';
     if(filtroT==='hecho') return t.estado==='hecho';
     return true;
   });
@@ -1035,18 +1053,20 @@ function renderTareas() {
       <div class="agenda-mes-titulo">📅 ${mes.charAt(0).toUpperCase()+mes.slice(1)}</div>
       ${items.map(t => {
         const fStr = t.fecha?new Date(t.fecha+'T00:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'}):'Sin fecha';
-        return `<div class="agenda-item">
-          <div class="agenda-fecha">${fStr}</div>
-          <div class="agenda-content">
-            <div class="agenda-nombre" style="${t.estado==='hecho'?'text-decoration:line-through;color:var(--text3)':''}">${t.nombre}</div>
-            <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
+        const isDone = t.estado === 'hecho';
+        const calDesc = t.notas||'';
+        return `<div class="agenda-item" style="${isDone?'opacity:0.55':''}">
+          <div class="c-check${isDone?' checked':''}" style="margin-top:2px;flex-shrink:0;cursor:pointer" onclick="marcarTareaHecha('${t._id}')">${isDone?'✓':''}</div>
+          <div style="flex:1">
+            <div class="agenda-nombre" style="${isDone?'text-decoration:line-through;color:var(--text3)':''}">${t.nombre}</div>
+            <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;align-items:center;">
+              <span class="agenda-fecha" style="min-width:auto">${fStr}</span>
               <span class="resp-badge ${respCls[t.resp]}">${respLbl[t.resp]}</span>
               ${t.notas?`<span style="font-size:11px;color:var(--text2)">📝 ${t.notas}</span>`:''}
             </div>
           </div>
           <div class="agenda-actions">
-            ${t.fecha?`<button class="btn-sm cal" onclick="agregarACalendar('${t.nombre.replace(/'/g,"\'")}','${t.fecha}','${t.notas?t.notas.replace(/'/g,"\'"):''}')">📅</button>`:''}
-            ${t.estado!=='hecho'?`<button class="btn-sm done" onclick="marcarTareaHecha('${t._id}')">✓</button>`:''}
+            ${t.fecha?`<button class="btn-sm cal" style="font-size:11px" onclick="agregarACalendar('${t.nombre.replace(/'/g,"\'")}','${t.fecha}','${calDesc.replace(/'/g,"\'")}')">📅</button>`:''}
             <button class="btn-sm edit" onclick="abrirModal('modal-tarea','${t._id}','tarea')">✏️</button>
             <button class="btn-sm del" onclick="borrarTarea('${t._id}')">🗑️</button>
           </div>
@@ -1057,15 +1077,14 @@ function renderTareas() {
 }
 
 window.marcarTareaHecha = async (id) => {
-  await updateItem('tareas', id, {estado:'hecho'});
-  tareasData.find(t=>t._id===id).estado = 'hecho';
+  const t = tareasData.find(x=>x._id===id);
+  if(!t) return;
+  const nuevo = t.estado === 'hecho' ? 'pendiente' : 'hecho';
+  await updateItem('tareas', id, {estado: nuevo});
+  t.estado = nuevo;
   renderTareas();
 };
-window.borrarTarea = async (id) => {
-  await deleteItem('tareas', id);
-  tareasData = tareasData.filter(t=>t._id!==id);
-  renderTareas();
-};
+window.borrarTarea = (id) => confirmarEliminar('¿Eliminás esta tarea?', async () => { await deleteItem('tareas', id); tareasData = tareasData.filter(t=>t._id!==id); renderTareas(); });
 
 // ═══ MUDANZA TAREAS ═══
 let mudData = [];
@@ -1074,30 +1093,50 @@ window.filtrarMud = (f, btn) => { document.querySelectorAll('#filtros-mud .filte
 
 function renderMud() {
   const cont = document.getElementById('lista-mud');
-  const filtered = mudData.filter(t => filtroMud==='todas'||(filtroMud===t.est));
-  filtered.sort((a,b)=>(a.fecha||'9999')>(b.fecha||'9999')?1:-1);
+  const prioCls = {principal:'est-pend', secundaria:'est-cont', estetica:'est-ok'};
+  const prioLbl = {principal:'🔴 Principal', secundaria:'🟡 Secundaria', estetica:'🟢 Estética'};
+  const prioOrder = {principal:0, secundaria:1, estetica:2};
+  const estCls = {pendiente:'est-pend', proceso:'est-cont', listo:'est-ok'};
+  const estLbl = {pendiente:'Pendiente', proceso:'En proceso', listo:'Listo ✓'};
+
+  let filtered = mudData.filter(t => {
+    if(filtroMud === 'todas') return true;
+    if(filtroMud === 'principal' || filtroMud === 'secundaria' || filtroMud === 'estetica') return (t.prio||'secundaria') === filtroMud;
+    if(filtroMud === 'pendiente' || filtroMud === 'proceso' || filtroMud === 'listo') return t.est === filtroMud;
+    return true;
+  });
+
+  filtered.sort((a,b) => {
+    const pa = prioOrder[a.prio||'secundaria'], pb = prioOrder[b.prio||'secundaria'];
+    if(pa !== pb) return pa - pb;
+    return (a.fecha||'9999') > (b.fecha||'9999') ? 1 : -1;
+  });
+
   if(!filtered.length){cont.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic;padding:1rem 0">Sin tareas.</p>';return;}
-  const meses={};
-  filtered.forEach(t=>{
-    let mes='Sin fecha';
+
+  const meses = {};
+  filtered.forEach(t => {
+    let mes = 'Sin fecha';
     if(t.fecha){const d=new Date(t.fecha+'T00:00:00');mes=d.toLocaleDateString('es-AR',{month:'long',year:'numeric'});}
-    if(!meses[mes])meses[mes]=[];
+    if(!meses[mes]) meses[mes] = [];
     meses[mes].push(t);
   });
-  const estCls={pendiente:'est-pend',proceso:'est-cont',listo:'est-ok'};
-  const estLbl={pendiente:'Pendiente',proceso:'En proceso',listo:'Listo ✓'};
+
   cont.innerHTML = Object.entries(meses).map(([mes, items]) => `
     <div class="agenda-mes">
       <div class="agenda-mes-titulo">🏠 ${mes.charAt(0).toUpperCase()+mes.slice(1)}</div>
       ${items.map(t => {
         const fStr = t.fecha?new Date(t.fecha+'T00:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'}):'Sin fecha';
-        return `<div class="agenda-item">
-          <div class="agenda-fecha">${fStr}</div>
-          <div class="agenda-content">
-            <div class="agenda-nombre">${t.nombre}</div>
+        const isDone = t.est === 'listo';
+        return `<div class="agenda-item" style="${isDone?'opacity:0.55':''}">
+          <div class="c-check${isDone?' checked':''}" style="margin-top:2px;flex-shrink:0;cursor:pointer" onclick="marcarMudListo('${t._id}')">${isDone?'✓':''}</div>
+          <div style="flex:1">
+            <div class="agenda-nombre" style="${isDone?'text-decoration:line-through;color:var(--text3)':'font-weight:500'}">${t.nombre}</div>
             <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
+              <span class="pres-estado ${prioCls[t.prio||'secundaria']}">${prioLbl[t.prio||'secundaria']}</span>
               <span class="pres-estado ${estCls[t.est]}">${estLbl[t.est]}</span>
               <span class="pill pill-otr">${t.cat}</span>
+              ${t.notas?`<span style="font-size:11px;color:var(--text2)">📝 ${t.notas}</span>`:''}
             </div>
           </div>
           <div class="agenda-actions">
@@ -1110,435 +1149,15 @@ function renderMud() {
   `).join('');
 }
 
-window.borrarMud = async (id) => {
-  await deleteItem('mudanza', id);
-  mudData = mudData.filter(t=>t._id!==id);
+window.marcarMudListo = async (id) => {
+  const t = mudData.find(x=>x._id===id);
+  if(!t) return;
+  const nuevo = t.est === 'listo' ? 'pendiente' : 'listo';
+  await updateItem('mudanza', id, {est: nuevo});
+  t.est = nuevo;
   renderMud();
 };
-
-// ═══ PRESUPUESTO ═══
-let presData = [];
-function renderPres() {
-  const cont = document.getElementById('lista-pres');
-  if(!presData.length){cont.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic;">Sin presupuestos cargados.</p>';return;}
-  const estCls={pend:'est-pend',cont:'est-cont',ok:'est-ok'};
-  const estLbl={pend:'Pendiente cotización',cont:'Contactado',ok:'Confirmado ✓'};
-  cont.innerHTML = presData.map(p => `
-    <div class="pres-card">
-      <div class="pres-header"><span class="pres-nombre">${p.nombre}</span><span class="pres-monto">${p.monto||'$ —'}</span></div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
-        <span class="pres-estado ${estCls[p.est]}">${estLbl[p.est]}</span>
-        ${p.prov?`<span style="font-size:11px;color:var(--text2)">🏢 ${p.prov}</span>`:''}
-      </div>
-      ${p.contacto||p.link?`<div style="font-size:12px;color:var(--text2);margin-top:6px;">${p.contacto?'📞 '+p.contacto:''} ${p.link?`<a href="${p.link}" class="link-ext" target="_blank">↗ Link</a>`:''}</div>`:''}
-      ${p.notas?`<div class="c-note" style="margin-top:6px">📝 ${p.notas}</div>`:''}
-      <div style="display:flex;gap:5px;margin-top:8px;">
-        <button class="btn-sm edit" onclick="abrirModal('modal-pres','${p._id}','pres')">✏️</button>
-        <button class="btn-sm del" onclick="borrarPres('${p._id}')">🗑️</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-window.borrarPres = async (id) => {
-  await deleteItem('presupuestos', id);
-  presData = presData.filter(p=>p._id!==id);
-  renderPres();
-  checkCtx();
-};
-
-// ═══ RUTINAS CUSTOM ═══
-let rutinasCustom = [];
-function renderRutinasCustom() {
-  const cont = document.getElementById('rutinas-custom');
-  if(!rutinasCustom.length){cont.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic;">Sin rutinas personalizadas.</p>';return;}
-  cont.innerHTML = rutinasCustom.map(r => `
-    <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--bg3);">
-      <span class="pill pill-hog" style="flex-shrink:0">${r.hora}</span>
-      <span style="flex:1;font-size:13px">${r.texto}</span>
-      <button class="btn-sm del" onclick="borrarRutinaCustom('${r._id}')">🗑️</button>
-    </div>
-  `).join('');
-}
-
-window.agregarRutinaCustom = async () => {
-  if(_saving) return; _saving=true; setTimeout(()=>_saving=false,1500);
-  const hora = document.getElementById('rut-hora').value;
-  const texto = document.getElementById('rut-texto').value.trim();
-  if(!texto) return;
-  const id = await addItem('rutinas', {hora, texto});
-  rutinasCustom.push({_id:id, hora, texto});
-  renderRutinasCustom();
-  document.getElementById('rut-texto').value = '';
-};
-
-window.borrarRutinaCustom = async (id) => {
-  await deleteItem('rutinas', id);
-  rutinasCustom = rutinasCustom.filter(r=>r._id!==id);
-  renderRutinasCustom();
-};
-
-// ═══ TIPS ═══
-let tipsCustom = [];
-let filtroTips = 'todos';
-
-window.filtrarTips = (f, btn) => {
-  document.querySelectorAll('#filtros-tips .filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active'); filtroTips=f; renderTips();
-};
-
-function makeTipCard(t, ctxTips) {
-  const badgeClass = {embarazo:'tip-badge-embarazo',crianza:'tip-badge-crianza',deco:'tip-badge-deco',custom:'tip-badge-custom'};
-  const catLabel = {embarazo:'🤰 Embarazo',crianza:'👶 Crianza',deco:'🎨 Deco',custom:'💜 Nuestro'};
-  const isAuto = ctxTips && ctxTips.includes(t.texto);
-  return `<div class="tip-card${isAuto?' tip-card-auto':''}">
-    <div class="tip-card-top">
-      <span class="tip-icon">${t.icon||'💡'}</span>
-      <span class="tip-badge ${isAuto?'tip-badge-auto':badgeClass[t.cat]||'tip-badge-embarazo'}">${isAuto?'✨ Automático':catLabel[t.cat]||t.cat}</span>
-    </div>
-    <div class="tip-tag">${t.etq}</div>
-    <p>${t.texto}</p>
-    ${t.source?`<a href="${t.source}" class="tip-source" target="_blank">↗ ${t.sourceLabel||'Ver fuente'}</a>`:''}
-    ${t.custom?`<button class="btn-sm del" style="margin-top:6px;align-self:flex-start" onclick="borrarTipCustom('${t._id}')">🗑️</button>`:''}
-  </div>`;
-}
-
-function renderTips(ctxTips) {
-  const cont = document.getElementById('lista-tips');
-  const all = [
-    ...tipsBase.map(t=>({...t,custom:false})),
-    ...tipsCustom.map(t=>({...t,custom:true,icon:t.icon||'💜'}))
-  ];
-  // Add ctx tips that aren't already in base
-  const ctxExtra = (ctxTips||[]).filter(texto => !all.find(t=>t.texto===texto));
-  const ctxCards = ctxExtra.map(texto => ({texto, cat:'auto', etq:'Automático', icon:'✨', custom:false, isAuto:true}));
-  
-  let filtered;
-  if(filtroTips==='todos') filtered = [...ctxCards, ...all];
-  else if(filtroTips==='automatico') filtered = ctxCards.concat(all.filter(t => ctxTips && ctxTips.includes(t.texto)));
-  else if(filtroTips==='custom') filtered = all.filter(t=>t.custom);
-  else filtered = all.filter(t=>t.cat===filtroTips);
-
-  if(!filtered.length){cont.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic;padding:1rem">Sin tips con este filtro.</p>';return;}
-  cont.innerHTML = `<div class="tips-grid">${filtered.map(t=>makeTipCard(t, ctxTips||[])).join('')}</div>`;
-}
-
-window.agregarTipCustom = async () => {
-  if(_saving) return; _saving=true; setTimeout(()=>_saving=false,1500);
-  const texto = document.getElementById('new-tip-text').value.trim();
-  const etq = document.getElementById('new-tip-etq').value.trim()||'Nuestro';
-  const cat = document.getElementById('new-tip-cat').value;
-  if(!texto) return;
-  const id = await addItem('tips', {texto, etq, cat});
-  tipsCustom.push({_id:id, texto, etq, cat});
-  renderTips(lastCtxTips);
-  document.getElementById('new-tip-text').value='';
-  document.getElementById('new-tip-etq').value='';
-};
-
-window.borrarTipCustom = async (id) => {
-  await deleteItem('tips', id);
-  tipsCustom = tipsCustom.filter(t=>t._id!==id);
-  renderTips(lastCtxTips);
-};
-
-// ═══ TIPS CONTEXTUALES ═══
-let lastCtxTips = [];
-function checkCtx() {
-  const allText = JSON.stringify({mudData, presData, ambData}).toLowerCase();
-  lastCtxTips = detectCtxTips({text: allText});
-  renderTips(lastCtxTips);
-}
-
-// ═══ MODAL UNIFICADO ═══
-let editIds = {compra:null, inv:null, tarea:null, mud:null, pres:null};
-
-window.abrirModal = (modalId, id, tipo) => {
-  editIds[tipo] = id;
-  const tituloMap = {compra:'mc-titulo', inv:'mi-titulo', tarea:'mt-titulo', mud:'mm-titulo'};
-  if(tituloMap[tipo]) {
-    document.getElementById(tituloMap[tipo]).textContent = id ? 'Editar' : 'Agregar';
-  }
-  if(id) {
-    const dataMap = {compra:comprasData, inv:invData, tarea:tareasData, mud:mudData, pres:presData};
-    const item = dataMap[tipo].find(x=>x._id===id);
-    if(item) {
-      const fieldMap = {
-        compra: {nombre:'mc-nombre',cat:'mc-cat',prio:'mc-prio',precio:'mc-precio',link:'mc-link',notas:'mc-notas',estado:'mc-estado'},
-        inv: {prenda:'mi-prenda',detalle:'mi-detalle',cant:'mi-cant',talle:'mi-talle',estacion:'mi-estacion',origen:'mi-origen',de:'mi-de'},
-        tarea: {nombre:'mt-nombre',resp:'mt-resp',fecha:'mt-fecha',prio:'mt-prio',notas:'mt-notas'},
-        mud: {nombre:'mm-nombre',prio:'mm-prio',cat:'mm-cat',est:'mm-est',fecha:'mm-fecha',resp:'mm-resp',notas:'mm-notas'},
-        pres: {nombre:'mp-nombre',monto:'mp-monto',prov:'mp-prov',contacto:'mp-contacto',link:'mp-link',est:'mp-est',notas:'mp-notas'}
-      };
-      Object.entries(fieldMap[tipo]).forEach(([key,elId]) => {
-        const el = document.getElementById(elId);
-        if(el) el.value = item[key]||'';
-      });
-    }
-  } else {
-    // limpiar campos
-    const clearMap = {
-      turno: ['mtu-nombre','mtu-profesional','mtu-fecha','mtu-hora','mtu-direccion','mtu-os','mtu-notas'],
-      compra: ['mc-nombre','mc-precio','mc-link','mc-notas'],
-      inv: ['mi-prenda','mi-detalle','mi-talle','mi-de'],
-      tarea: ['mt-nombre','mt-fecha','mt-notas'],
-      mud: ['mm-nombre','mm-fecha','mm-notas','mm-prio'],
-      pres: ['mp-nombre','mp-monto','mp-prov','mp-contacto','mp-link','mp-notas']
-    };
-    (clearMap[tipo]||[]).forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-  }
-  document.getElementById(modalId).classList.add('open');
-};
-
-let _saving = false;
-window.guardarItem = async (tipo) => {
-  if(_saving) return;
-  _saving = true;
-  setTimeout(()=>_saving=false, 1500);
-  const getters = {
-    turno: () => ({nombre:document.getElementById('mtu-nombre').value.trim(),profesional:document.getElementById('mtu-profesional').value,fecha:document.getElementById('mtu-fecha').value,hora:document.getElementById('mtu-hora').value,direccion:document.getElementById('mtu-direccion').value,os:document.getElementById('mtu-os').value,notas:document.getElementById('mtu-notas').value,estado:'pendiente'}),
-    compra: () => ({nombre:document.getElementById('mc-nombre').value.trim(),cat:document.getElementById('mc-cat').value,prio:document.getElementById('mc-prio').value,precio:document.getElementById('mc-precio').value,link:document.getElementById('mc-link').value,notas:document.getElementById('mc-notas').value,estado:document.getElementById('mc-estado').value}),
-    inv: () => ({prenda:document.getElementById('mi-prenda').value.trim(),detalle:document.getElementById('mi-detalle').value,cant:parseInt(document.getElementById('mi-cant').value)||1,talle:document.getElementById('mi-talle').value,estacion:document.getElementById('mi-estacion').value,origen:document.getElementById('mi-origen').value,de:document.getElementById('mi-de').value}),
-    tarea: () => ({nombre:document.getElementById('mt-nombre').value.trim(),resp:document.getElementById('mt-resp').value,fecha:document.getElementById('mt-fecha').value,prio:document.getElementById('mt-prio').value,notas:document.getElementById('mt-notas').value,estado:'pendiente'}),
-    mud: () => ({nombre:document.getElementById('mm-nombre').value.trim(),prio:document.getElementById('mm-prio').value,cat:document.getElementById('mm-cat').value,est:document.getElementById('mm-est').value,fecha:document.getElementById('mm-fecha').value,resp:document.getElementById('mm-resp').value,notas:document.getElementById('mm-notas').value}),
-    pres: () => ({nombre:document.getElementById('mp-nombre').value.trim(),monto:document.getElementById('mp-monto').value,prov:document.getElementById('mp-prov').value,contacto:document.getElementById('mp-contacto').value,link:document.getElementById('mp-link').value,est:document.getElementById('mp-est').value,notas:document.getElementById('mp-notas').value})
-  };
-  const colMap = {turno:'turnos',compra:'compras',inv:'inventario',tarea:'tareas',mud:'mudanza',pres:'presupuestos'};
-  const dataMap = {turno:turnosData,compra:comprasData,inv:invData,tarea:tareasData,mud:mudData,pres:presData};
-  const renderMap = {turno:renderTurnos,compra:renderCompras,inv:renderInv,tarea:renderTareas,mud:renderMud,pres:renderPres};
-  const modalMap = {turno:'modal-turno',compra:'modal-compra',inv:'modal-inv',tarea:'modal-tarea',mud:'modal-mud',pres:'modal-pres'};
-
-  const data = getters[tipo]();
-  const nameKey = tipo==='inv'?'prenda':'nombre';
-  if(tipo==='turno'&&!data.nombre) return;
-  if(!data[nameKey]) return;
-
-  const editId = editIds[tipo];
-  if(editId) {
-    await updateItem(colMap[tipo], editId, data);
-    const idx = dataMap[tipo].findIndex(x=>x._id===editId);
-    if(idx>=0) dataMap[tipo][idx] = {...dataMap[tipo][idx], ...data};
-  } else {
-    const id = await addItem(colMap[tipo], data);
-    dataMap[tipo].push({...data, _id:id});
-  }
-  cerrarModal(modalMap[tipo]);
-  renderMap[tipo]();
-  checkCtx();
-};
-
-// ═══ UTILS ═══
-window.cerrarModal = (id) => { document.getElementById(id).classList.remove('open'); };
-window.showSection = (id) => {
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('sec-'+id).classList.add('active');
-  event.currentTarget.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(id==='tips') checkCtx();
-};
-window.showMudTab = (tab, btn) => {
-  document.querySelectorAll('.mud-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.mud-panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-'+tab).classList.add('active');
-};
-document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
-document.getElementById('confirm-bg').addEventListener('click',e=>{if(e.target===document.getElementById('confirm-bg'))cerrarConfirm();});
-
-// ═══ INIT ═══
-async function initApp() {
-  initAmbPanels();
-
-  // Cargar config embarazo
-  const embDoc = await getDoc(doc(db, 'config', 'embarazo'));
-  if(embDoc.exists()) {
-    const d = embDoc.data();
-    // Auto-calculate current week+days from saved reference date
-    const calc = calcEmbarazoDesdeRef(d.sem||24, d.dias||0, d.fechaRef||null);
-    document.getElementById('inp-semana').value = calc.sem;
-    document.getElementById('inp-dias').value = calc.dias;
-    document.getElementById('inp-fpp').value = d.fpp||'';
-    updateEmbarazoUI(calc.sem, calc.dias, d.fpp||'');
-  } else {
-    updateEmbarazoUI(24, 0, '');
-  }
-
-  // Cargar notas
-  const notaEmb = await getDoc(doc(db, 'notas', 'embarazo'));
-  if(notaEmb.exists()) document.getElementById('nota-embarazo').value = notaEmb.data().texto||'';
-  const notaObs = await getDoc(doc(db, 'notas', 'obstetra'));
-  if(notaObs.exists()) document.getElementById('nota-obstetra').value = notaObs.data().texto||'';
-  const notaMud = await getDoc(doc(db, 'notas', 'mudanza'));
-  if(notaMud.exists()) document.getElementById('nota-mudanza').value = notaMud.data().texto||'';
-
-  // Cargar colecciones
-  turnosData = await getAll('turnos'); renderTurnos();
-  comprasData = await getAll('compras');
-  // Cargar datos iniciales de compras si está vacío
-  if(!comprasData.length) {
-    const inicial = [
-      {nombre:"Body Ardillitas + Set Salchi",cat:"indumentaria",prio:"bajo",precio:"$32.000",link:"",notas:"Llegó el 9/4. Lo compró Gonza",estado:"finalizado"},
-      {nombre:"Baby Call Gadnic CAMBEB48",cat:"higiene",prio:"medio",precio:"$70.700",link:"",notas:"Comprado el 3/4",estado:"finalizado"},
-      {nombre:"Almohada de embarazo",cat:"mama",prio:"bajo",precio:"$49.500",link:"",notas:"",estado:"finalizado"},
-      {nombre:"Bañadera plegable Avanti Fresh + reductor + termómetro",cat:"higiene",prio:"bajo",precio:"",link:"",notas:"",estado:"finalizado"},
-      {nombre:"Cuna / cama / colecho",cat:"hogar",prio:"her",precio:"Heredado",link:"",notas:"Nos lo prestaría Cami — confirmar",estado:"pendiente"},
-      {nombre:"Lima de uñas eléctrica",cat:"higiene",prio:"her",precio:"Heredado",link:"",notas:"Nos lo daría Cami — confirmar",estado:"pendiente"},
-      {nombre:"Remera SL",cat:"indumentaria",prio:"bajo",precio:"",link:"",notas:"Responsabilidad de Gonza",estado:"pendiente"},
-      {nombre:"Mamadera Lansinoh NaturalWave",cat:"higiene",prio:"bajo",precio:"",link:"",notas:"Modelo recomendado por Cami",estado:"pendiente"},
-      {nombre:"Chupete Avent Soothie 0–6m (pack x2)",cat:"higiene",prio:"bajo",precio:"",link:"https://articulo.mercadolibre.com.ar/MLA-1142543099",notas:"Modelo recomendado por Cami",estado:"pendiente"},
-      {nombre:"Asiento auto convertible Graco Triride",cat:"hogar",prio:"alto",precio:"$706.000",link:"",notas:"⚠ Sin esto no salen del hospital",estado:"pendiente"},
-      {nombre:"Bolso/mochila maternal",cat:"otro",prio:"medio",precio:"",link:"",notas:"",estado:"pendiente"},
-      {nombre:"Bolsa para dormir",cat:"otro",prio:"bajo",precio:"",link:"",notas:"Lo compra Sam",estado:"pendiente"},
-      {nombre:"Luz roja nocturna + ruido blanco",cat:"hogar",prio:"bajo",precio:"",link:"",notas:"",estado:"pendiente"},
-      {nombre:"Fular (Monada Little Stuff)",cat:"hogar",prio:"regalo",precio:"",link:"https://www.instagram.com/monada.littlestuff",notas:"Regalo posible",estado:"pendiente"},
-      {nombre:"Almohadón de lactancia",cat:"mama",prio:"bajo",precio:"",link:"",notas:"",estado:"pendiente"},
-      {nombre:"Set Baby Dove (shampoo + jabón líquido)",cat:"higiene",prio:"bajo",precio:"",link:"",notas:"Sirve hasta el año. No usar otras marcas. Dato de Cami.",estado:"pendiente"}
-    ];
-    for(const item of inicial) {
-      const id = await addItem('compras', item);
-      comprasData.push({...item, _id:id});
-    }
-  }
-  renderCompras();
-
-  invData = await getAll('inventario');
-  if(!invData.length) {
-    const invInicial = [
-      {prenda:"Pantalón",detalle:"Largo color lila",cant:1,talle:"3-6 M",estacion:"Media",origen:"regalo",de:"Felix y Li"},
-      {prenda:"Conjunto 3 prendas",detalle:"Calza + reme + gorro (blanco c/ estampa)",cant:1,talle:"RN",estacion:"Media",origen:"regalo",de:"Felix y Li"},
-      {prenda:"Abrigo",detalle:"Con capucha floreada",cant:1,talle:"3-6 M",estacion:"Media",origen:"regalo",de:"Felix y Li"},
-      {prenda:"Body",detalle:"Manga larga (blanco + verde + beige)",cant:3,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Cami y Mati (G)"},
-      {prenda:"Pantalón",detalle:"Largo (blanco + verde + beige)",cant:3,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Cami y Mati (G)"},
-      {prenda:"Body c/ pantalón",detalle:"Manga larga (blanco x2 + beige)",cant:3,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Ale y Richard"},
-      {prenda:"Conjunto 3 prendas",detalle:"Body + calza + abrigo (perritos)",cant:1,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Ale y Richard"},
-      {prenda:"Conjunto 3 prendas",detalle:"Calza + reme + gorro (blanco)",cant:1,talle:"Talle 1",estacion:"Media",origen:"regalo",de:"Ale y Richard"},
-      {prenda:"Conjunto 2 prendas",detalle:"Body + abrigo (crema c/ bordado)",cant:1,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Ale y Richard"},
-      {prenda:"Conjunto 3 prendas",detalle:"Calza + saquito + gorro (salchis)",cant:1,talle:"Talle 0",estacion:"Media",origen:"comprado",de:"Gonza"},
-      {prenda:"Body",detalle:"Estampa ardillitas",cant:1,talle:"Talle 1",estacion:"Media",origen:"comprado",de:"Gonza"},
-      {prenda:"Body",detalle:"Rosa liso",cant:1,talle:"Talle 0",estacion:"Media",origen:"regalo",de:"Marino (Lili)"},
-      {prenda:"Conjunto 3 prendas",detalle:"Camperita polar + gorrito + medias (rosa)",cant:1,talle:"Talle 0",estacion:"Invierno",origen:"regalo",de:"Marino (Lili)"},
-      {prenda:"Ojotas",detalle:"Winnie Pooh (para +1 año)",cant:1,talle:"+1 año",estacion:"Verano",origen:"regalo",de:"Mati y Cami (S)"},
-      {prenda:"Body c/ pantalón",detalle:"Rosa claro flores + fucsia con moño",cant:1,talle:"Talle 0",estacion:"Media",origen:"regalo",de:"La Silvi"}
-    ];
-    for(const item of invInicial) {
-      const id = await addItem('inventario', item);
-      invData.push({...item, _id:id});
-    }
-  }
-  renderInv();
-
-  tareasData = await getAll('tareas');
-  if(!tareasData.length) {
-    const tareasIni = [
-      {nombre:"Preparar el cuarto de Olivia",resp:"juntos",fecha:"2025-08-01",prio:"alta",notas:"",estado:"pendiente"},
-      {nombre:"Armar la bolsa para el hospital",resp:"sam",fecha:"2025-08-15",prio:"alta",notas:"",estado:"pendiente"},
-      {nombre:"Instalar butaca Graco en el auto",resp:"gonza",fecha:"2025-08-10",prio:"alta",notas:"Sin esto no pueden salir del hospital",estado:"pendiente"},
-      {nombre:"Confirmar cuna/colecho con Cami",resp:"juntos",fecha:"2025-07-15",prio:"alta",notas:"",estado:"pendiente"},
-      {nombre:"Gestionar licencia por maternidad",resp:"sam",fecha:"2025-07-20",prio:"alta",notas:"",estado:"pendiente"},
-      {nombre:"Gestionar licencia por paternidad",resp:"gonza",fecha:"2025-07-20",prio:"alta",notas:"",estado:"pendiente"},
-      {nombre:"Visitar el hospital/clínica de parto",resp:"juntos",fecha:"2025-07-25",prio:"media",notas:"",estado:"pendiente"},
-      {nombre:"Comprar mamadera Lansinoh NaturalWave",resp:"juntos",fecha:"2025-08-01",prio:"media",notas:"Recomendada por Cami",estado:"pendiente"},
-      {nombre:"Comprar chupete Avent Soothie 0–6m x2",resp:"juntos",fecha:"2025-08-01",prio:"media",notas:"Recomendado por Cami",estado:"pendiente"}
-    ];
-    for(const t of tareasIni) {
-      const id = await addItem('tareas', t);
-      tareasData.push({...t, _id:id});
-    }
-  }
-  renderTareas();
-
-  mudData = await getAll('mudanza');
-  if(!mudData.length) {
-    const mudIni = [
-      {nombre:"Revisar funcionamiento estufa + calefón + gas en la cocina",cat:"Servicios",prio:"principal",est:"pendiente",fecha:"2025-06-15",resp:"juntos",notas:""},
-      {nombre:"Solucionar caño sobresalido del patio con acceso abierto a rejilla",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-06-15",resp:"juntos",notas:""},
-      {nombre:"Pintar todo el departamento",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-07-01",resp:"juntos",notas:""},
-      {nombre:"Arreglo ventanas (marcos oxidados + ventanas que no cierran bien)",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-07-01",resp:"juntos",notas:""},
-      {nombre:"Quitar AA viejo de habitación",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-06-20",resp:"gonza",notas:""},
-      {nombre:"Arreglar grietas",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-07-01",resp:"juntos",notas:""},
-      {nombre:"Arreglo de puerta habitación",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-06-30",resp:"juntos",notas:""},
-      {nombre:"Muebles bajo mesada cocina: cajonera rota",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-07-01",resp:"juntos",notas:""},
-      {nombre:"Limpieza de techo patio (revisar filtraciones/roturas)",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-06-20",resp:"juntos",notas:""},
-      {nombre:"Arreglo mochilas inodoros",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-06-20",resp:"juntos",notas:""},
-      {nombre:"Conseguir flete / empresa de mudanza",cat:"Logística",prio:"principal",est:"pendiente",fecha:"2025-07-20",resp:"gonza",notas:""},
-      {nombre:"Dar de baja/alta servicios (luz, gas, internet)",cat:"Servicios",prio:"principal",est:"pendiente",fecha:"2025-08-05",resp:"gonza",notas:""},
-      {nombre:"Actualizar domicilio en documentos",cat:"Trámites",prio:"principal",est:"pendiente",fecha:"2025-08-15",resp:"sam",notas:""},
-      {nombre:"Piso nuevo en living + pasillo (madera click SPC)",cat:"Remodelación",prio:"secundaria",est:"pendiente",fecha:"2025-08-01",resp:"juntos",notas:""},
-      {nombre:"Reemplazar ventanales hab ppal + living + hab Olivia (doble vidrio, cierre hermético)",cat:"Remodelación",prio:"secundaria",est:"pendiente",fecha:"2025-08-15",resp:"juntos",notas:"Prioridad por sonido externo — primer piso con calle empedrada"},
-      {nombre:"Interior placards: estado de estantes, humedad, cajones",cat:"Remodelación",prio:"secundaria",est:"pendiente",fecha:"2025-08-01",resp:"juntos",notas:""},
-      {nombre:"Cambio general de teclas de luces",cat:"Remodelación",prio:"secundaria",est:"pendiente",fecha:"2025-08-15",resp:"gonza",notas:""},
-      {nombre:"Tunear ambos baños (azulejos + pintura + vinilo piso + bachas)",cat:"Remodelación",prio:"estetica",est:"pendiente",fecha:"2025-09-01",resp:"juntos",notas:"Refresh con nuevos azulejos y pintura para tapar cerámica vieja"},
-      {nombre:"Refaccionar cocina: cambiar azulejos con vinilos",cat:"Remodelación",prio:"estetica",est:"pendiente",fecha:"2025-09-01",resp:"juntos",notas:""},
-      {nombre:"Cambio de griferías (cocina y duchador)",cat:"Remodelación",prio:"estetica",est:"pendiente",fecha:"2025-09-15",resp:"juntos",notas:""},
-      {nombre:"Remodelar patio interno",cat:"Remodelación",prio:"estetica",est:"pendiente",fecha:"2025-09-15",resp:"juntos",notas:""},
-      {nombre:"Pintar todas las puertas interiores y sumar molduras",cat:"Remodelación",prio:"estetica",est:"pendiente",fecha:"2025-09-01",resp:"juntos",notas:""},
-      {nombre:"Red protectora en balcón",cat:"Seguridad",prio:"estetica",est:"pendiente",fecha:"2025-09-01",resp:"juntos",notas:""},
-      {nombre:"Cambiar tablas de inodoros",cat:"Remodelación",prio:"estetica",est:"pendiente",fecha:"2025-09-15",resp:"juntos",notas:""}
-    ];
-    for(const t of mudIni) {
-      const id = await addItem('mudanza', t);
-      mudData.push({...t, _id:id});
-    }
-  }
-  renderMud();
-
-  presData = await getAll('presupuestos'); renderPres();
-  rutinasCustom = await getAll('rutinas'); renderRutinasCustom();
-  tipsCustom = await getAll('tips'); renderTips(lastCtxTips);
-
-  // Cargar ambientes
-  for(const amb of ambientes) {
-    const ambDoc = await getDoc(doc(db, 'ambientes', amb));
-    if(ambDoc.exists()) {
-      ambData[amb] = {...ambData[amb], ...ambDoc.data()};
-      const colorEl = document.getElementById('color-'+amb);
-      const arreglosEl = document.getElementById('arreglos-'+amb);
-      const decoEl = document.getElementById('deco-'+amb);
-      if(colorEl) colorEl.value = ambData[amb].color||'';
-      if(arreglosEl) arreglosEl.value = ambData[amb].arreglos||'';
-      if(decoEl) decoEl.value = ambData[amb].deco||'';
-    }
-  }
-
-  // Cargar refs de ambientes
-  const refs = await getAll('refs');
-  refs.sort((a,b) => (a.ts||0)-(b.ts||0));
-  refs.forEach(ref => {
-    const grid = document.getElementById('refs-'+ref.amb);
-    if(grid) {
-      const emp = grid.querySelector('p.empty-ref');
-      if(emp) emp.remove();
-      renderRef(ref, grid);
-    }
-  });
-}
-
-
-// ═══ CONFIRM DELETE ═══
-let confirmFn = null;
-window.cerrarConfirm = () => { document.getElementById('confirm-bg').classList.remove('open'); confirmFn = null; };
-window.ejecutarConfirm = async () => { if(confirmFn) { await confirmFn(); } cerrarConfirm(); };
-function confirmarEliminar(msg, fn) {
-  document.getElementById('confirm-msg').textContent = msg || '¿Seguro que querés eliminarlo?';
-  confirmFn = fn;
-  document.getElementById('confirm-bg').classList.add('open');
-}
-window.borrarTurno = (id) => confirmarEliminar('¿Eliminás este turno?', async () => {
-  await deleteItem('turnos', id); turnosData = turnosData.filter(t=>t._id!==id); renderTurnos();
-});
-window.borrarCompra = (id) => confirmarEliminar('¿Eliminás este ítem?', async () => {
-  await deleteItem('compras', id); comprasData = comprasData.filter(c=>c._id!==id); renderCompras();
-});
-window.borrarInv = (id) => confirmarEliminar('¿Eliminás esta prenda?', async () => {
-  await deleteItem('inventario', id); invData = invData.filter(i=>i._id!==id); renderInv();
-});
-window.borrarTarea = (id) => confirmarEliminar('¿Eliminás esta tarea?', async () => {
-  await deleteItem('tareas', id); tareasData = tareasData.filter(t=>t._id!==id); renderTareas();
-});
-window.borrarMud = (id) => confirmarEliminar('¿Eliminás esta tarea de mudanza?', async () => {
-  await deleteItem('mudanza', id); mudData = mudData.filter(t=>t._id!==id); renderMud();
-});
+window.borrarMud = (id) => confirmarEliminar('¿Eliminás esta tarea de mudanza?', async () => { await deleteItem('mudanza', id); mudData = mudData.filter(t=>t._id!==id); renderMud(); });
 window.borrarPres = (id) => confirmarEliminar('¿Eliminás este presupuesto?', async () => {
   await deleteItem('presupuestos', id); presData = presData.filter(p=>p._id!==id); renderPres(); checkCtx();
 });
@@ -1604,7 +1223,238 @@ window.descargarBackup = async () => {
   }
 };
 
+window.abrirLightbox = (refId) => {
+  const card = document.querySelector(`[data-ref-id="${refId}"]`);
+  if(!card) return;
+  const img = card.querySelector('img');
+  if(!img) return;
+  document.getElementById('lightbox-img').src = img.src;
+  const lb = document.getElementById('lightbox');
+  lb.style.display = 'flex';
+};
+window.cerrarLightbox = () => {
+  document.getElementById('lightbox').style.display = 'none';
+};
+document.addEventListener('keydown', e => { if(e.key === 'Escape') cerrarLightbox(); });
+
+
+// ═══ INIT APP ═══
+async function initApp() {
+  initAmbPanels();
+
+  // Cargar embarazo
+  const embDoc = await getDoc(doc(db, 'config', 'embarazo'));
+  if(embDoc.exists()) {
+    const d = embDoc.data();
+    const calc = calcEmbarazoDesdeRef(d.sem||24, d.dias||0, d.fechaRef||null);
+    document.getElementById('inp-semana').value = calc.sem;
+    document.getElementById('inp-dias').value = calc.dias;
+    document.getElementById('inp-fpp').value = d.fpp||'';
+    updateEmbarazoUI(calc.sem, calc.dias, d.fpp||'');
+  } else {
+    updateEmbarazoUI(24, 0, '');
+  }
+
+  // Cargar notas
+  const notaEmb = await getDoc(doc(db, 'notas', 'embarazo'));
+  if(notaEmb.exists()) document.getElementById('nota-embarazo').value = notaEmb.data().texto||'';
+  const notaObs = await getDoc(doc(db, 'notas', 'obstetra'));
+  if(notaObs.exists()) document.getElementById('nota-obstetra').value = notaObs.data().texto||'';
+  const notaMud = await getDoc(doc(db, 'notas', 'mudanza'));
+  if(notaMud.exists()) document.getElementById('nota-mudanza').value = notaMud.data().texto||'';
+
+  // Turnos
+  turnosData = await getAll('turnos'); renderTurnos();
+
+  // Compras
+  comprasData = await getAll('compras');
+  if(!comprasData.length) {
+    const ini = [
+      {nombre:"Body Ardillitas + Set Salchi",cat:"indumentaria",prio:"bajo",precio:"$32.000",link:"",notas:"Llegó el 9/4. Lo compró Gonza",estado:"finalizado"},
+      {nombre:"Baby Call Gadnic CAMBEB48",cat:"higiene",prio:"medio",precio:"$70.700",link:"",notas:"Comprado el 3/4",estado:"finalizado"},
+      {nombre:"Almohada de embarazo",cat:"mama",prio:"bajo",precio:"$49.500",link:"",notas:"",estado:"finalizado"},
+      {nombre:"Bañadera plegable Avanti Fresh + reductor + termómetro",cat:"higiene",prio:"bajo",precio:"",link:"",notas:"",estado:"finalizado"},
+      {nombre:"Cuna / cama / colecho",cat:"hogar",prio:"her",precio:"Heredado",link:"",notas:"Nos lo prestaría Cami — confirmar",estado:"pendiente"},
+      {nombre:"Lima de uñas eléctrica",cat:"higiene",prio:"her",precio:"Heredado",link:"",notas:"Nos lo daría Cami — confirmar",estado:"pendiente"},
+      {nombre:"Remera SL",cat:"indumentaria",prio:"bajo",precio:"",link:"",notas:"Responsabilidad de Gonza",estado:"pendiente"},
+      {nombre:"Mamadera Lansinoh NaturalWave",cat:"higiene",prio:"bajo",precio:"",link:"",notas:"Modelo recomendado por Cami",estado:"pendiente"},
+      {nombre:"Chupete Avent Soothie 0–6m (pack x2)",cat:"higiene",prio:"bajo",precio:"",link:"https://articulo.mercadolibre.com.ar/MLA-1142543099",notas:"Modelo recomendado por Cami",estado:"pendiente"},
+      {nombre:"Asiento auto convertible Graco Triride",cat:"hogar",prio:"alto",precio:"$706.000",link:"",notas:"⚠ Sin esto no salen del hospital",estado:"pendiente"},
+      {nombre:"Bolso/mochila maternal",cat:"otro",prio:"medio",precio:"",link:"",notas:"",estado:"pendiente"},
+      {nombre:"Bolsa para dormir",cat:"otro",prio:"bajo",precio:"",link:"",notas:"Lo compra Sam",estado:"pendiente"},
+      {nombre:"Luz roja nocturna + ruido blanco",cat:"hogar",prio:"bajo",precio:"",link:"",notas:"",estado:"pendiente"},
+      {nombre:"Fular (Monada Little Stuff)",cat:"hogar",prio:"regalo",precio:"",link:"https://www.instagram.com/monada.littlestuff",notas:"Regalo posible",estado:"pendiente"},
+      {nombre:"Almohadón de lactancia",cat:"mama",prio:"bajo",precio:"",link:"",notas:"",estado:"pendiente"},
+      {nombre:"Set Baby Dove (shampoo + jabón líquido)",cat:"higiene",prio:"bajo",precio:"",link:"",notas:"Sirve hasta el año. No usar otras marcas. Dato de Cami.",estado:"pendiente"}
+    ];
+    for(const item of ini) { const id = await addItem('compras', item); comprasData.push({...item, _id:id}); }
+  }
+  renderCompras();
+
+  // Inventario
+  invData = await getAll('inventario');
+  if(!invData.length) {
+    const invIni = [
+      {prenda:"Pantalón",detalle:"Largo color lila",cant:1,talle:"3-6 M",estacion:"Media",origen:"regalo",de:"Felix y Li"},
+      {prenda:"Conjunto 3 prendas",detalle:"Calza + reme + gorro (blanco c/ estampa)",cant:1,talle:"RN",estacion:"Media",origen:"regalo",de:"Felix y Li"},
+      {prenda:"Abrigo",detalle:"Con capucha floreada",cant:1,talle:"3-6 M",estacion:"Media",origen:"regalo",de:"Felix y Li"},
+      {prenda:"Body",detalle:"Manga larga (blanco + verde + beige)",cant:3,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Cami y Mati (G)"},
+      {prenda:"Pantalón",detalle:"Largo (blanco + verde + beige)",cant:3,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Cami y Mati (G)"},
+      {prenda:"Body c/ pantalón",detalle:"Manga larga (blanco x2 + beige)",cant:3,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Ale y Richard"},
+      {prenda:"Conjunto 3 prendas",detalle:"Body + calza + abrigo (perritos)",cant:1,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Ale y Richard"},
+      {prenda:"Conjunto 3 prendas",detalle:"Calza + reme + gorro (blanco)",cant:1,talle:"Talle 1",estacion:"Media",origen:"regalo",de:"Ale y Richard"},
+      {prenda:"Conjunto 2 prendas",detalle:"Body + abrigo (crema c/ bordado)",cant:1,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Ale y Richard"},
+      {prenda:"Conjunto 3 prendas",detalle:"Calza + saquito + gorro (salchis)",cant:1,talle:"Talle 0",estacion:"Media",origen:"comprado",de:"Gonza"},
+      {prenda:"Body",detalle:"Estampa ardillitas",cant:1,talle:"Talle 1",estacion:"Media",origen:"comprado",de:"Gonza"},
+      {prenda:"Body",detalle:"Rosa liso",cant:1,talle:"Talle 0",estacion:"Media",origen:"regalo",de:"Marino (Lili)"},
+      {prenda:"Conjunto 3 prendas",detalle:"Camperita polar + gorrito + medias (rosa)",cant:1,talle:"Talle 0",estacion:"Invierno",origen:"regalo",de:"Marino (Lili)"},
+      {prenda:"Ojotas",detalle:"Winnie Pooh (para +1 año)",cant:1,talle:"+1 año",estacion:"Verano",origen:"regalo",de:"Mati y Cami (S)"},
+      {prenda:"Body c/ pantalón",detalle:"Rosa claro flores + fucsia con moño",cant:1,talle:"Talle 0",estacion:"Media",origen:"regalo",de:"La Silvi"}
+    ];
+    for(const item of invIni) { const id = await addItem('inventario', item); invData.push({...item, _id:id}); }
+  }
+  renderInv();
+
+  // Tareas
+  tareasData = await getAll('tareas');
+  if(!tareasData.length) {
+    const tIni = [
+      {nombre:"Preparar el cuarto de Olivia",resp:"juntos",fecha:"2025-08-01",prio:"alta",notas:"",estado:"pendiente"},
+      {nombre:"Armar la bolsa para el hospital",resp:"sam",fecha:"2025-08-15",prio:"alta",notas:"",estado:"pendiente"},
+      {nombre:"Instalar butaca Graco en el auto",resp:"gonza",fecha:"2025-08-10",prio:"alta",notas:"Sin esto no pueden salir del hospital",estado:"pendiente"},
+      {nombre:"Confirmar cuna/colecho con Cami",resp:"juntos",fecha:"2025-07-15",prio:"alta",notas:"",estado:"pendiente"},
+      {nombre:"Gestionar licencia por maternidad",resp:"sam",fecha:"2025-07-20",prio:"alta",notas:"",estado:"pendiente"},
+      {nombre:"Gestionar licencia por paternidad",resp:"gonza",fecha:"2025-07-20",prio:"alta",notas:"",estado:"pendiente"},
+      {nombre:"Visitar el hospital/clínica de parto",resp:"juntos",fecha:"2025-07-25",prio:"media",notas:"",estado:"pendiente"},
+      {nombre:"Comprar mamadera Lansinoh NaturalWave",resp:"juntos",fecha:"2025-08-01",prio:"media",notas:"Recomendada por Cami",estado:"pendiente"},
+      {nombre:"Comprar chupete Avent Soothie 0-6m x2",resp:"juntos",fecha:"2025-08-01",prio:"media",notas:"Recomendado por Cami",estado:"pendiente"}
+    ];
+    for(const t of tIni) { const id = await addItem('tareas', t); tareasData.push({...t, _id:id}); }
+  }
+  renderTareas();
+
+  // Mudanza — from docx
+  mudData = await getAll('mudanza');
+  if(!mudData.length) {
+    const mIni = [
+      {nombre:"Revisar funcionamiento estufa + calefón + gas en la cocina",cat:"Servicios",prio:"principal",est:"pendiente",fecha:"2025-06-15",resp:"juntos",notas:""},
+      {nombre:"Solucionar caño sobresalido del patio con acceso abierto a rejilla",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-06-15",resp:"juntos",notas:""},
+      {nombre:"Pintar todo el departamento",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-07-01",resp:"juntos",notas:""},
+      {nombre:"Arreglo ventanas (marcos oxidados + ventanas que no cierran bien)",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-07-01",resp:"juntos",notas:""},
+      {nombre:"Quitar AA viejo de habitación",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-06-20",resp:"gonza",notas:""},
+      {nombre:"Arreglar grietas",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-07-01",resp:"juntos",notas:""},
+      {nombre:"Arreglo de puerta habitación",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-06-30",resp:"juntos",notas:""},
+      {nombre:"Muebles bajo mesada cocina: cajonera rota",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-07-01",resp:"juntos",notas:""},
+      {nombre:"Limpieza de techo patio (revisar filtraciones/roturas)",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-06-20",resp:"juntos",notas:""},
+      {nombre:"Arreglo mochilas inodoros",cat:"Remodelación",prio:"principal",est:"pendiente",fecha:"2025-06-20",resp:"juntos",notas:""},
+      {nombre:"Conseguir flete / empresa de mudanza",cat:"Logística",prio:"principal",est:"pendiente",fecha:"2025-07-20",resp:"gonza",notas:""},
+      {nombre:"Dar de baja/alta servicios (luz, gas, internet)",cat:"Servicios",prio:"principal",est:"pendiente",fecha:"2025-08-05",resp:"gonza",notas:""},
+      {nombre:"Actualizar domicilio en documentos",cat:"Trámites",prio:"principal",est:"pendiente",fecha:"2025-08-15",resp:"sam",notas:""},
+      {nombre:"Piso nuevo en living + pasillo (madera click SPC)",cat:"Remodelación",prio:"secundaria",est:"pendiente",fecha:"2025-08-01",resp:"juntos",notas:""},
+      {nombre:"Reemplazar ventanales hab ppal + living + hab Olivia (doble vidrio)",cat:"Remodelación",prio:"secundaria",est:"pendiente",fecha:"2025-08-15",resp:"juntos",notas:"Prioridad por sonido externo — primer piso con calle empedrada"},
+      {nombre:"Interior placards: estado de estantes, humedad, cajones",cat:"Remodelación",prio:"secundaria",est:"pendiente",fecha:"2025-08-01",resp:"juntos",notas:""},
+      {nombre:"Cambio general de teclas de luces",cat:"Remodelación",prio:"secundaria",est:"pendiente",fecha:"2025-08-15",resp:"gonza",notas:""},
+      {nombre:"Tunear ambos baños (azulejos + pintura + vinilo piso + bachas)",cat:"Remodelación",prio:"estetica",est:"pendiente",fecha:"2025-09-01",resp:"juntos",notas:"Refresh con nuevos azulejos y pintura para tapar cerámica vieja"},
+      {nombre:"Refaccionar cocina: cambiar azulejos con vinilos",cat:"Remodelación",prio:"estetica",est:"pendiente",fecha:"2025-09-01",resp:"juntos",notas:""},
+      {nombre:"Cambio de griferías (cocina y duchador)",cat:"Remodelación",prio:"estetica",est:"pendiente",fecha:"2025-09-15",resp:"juntos",notas:""},
+      {nombre:"Remodelar patio interno",cat:"Remodelación",prio:"estetica",est:"pendiente",fecha:"2025-09-15",resp:"juntos",notas:""},
+      {nombre:"Pintar todas las puertas interiores y sumar molduras",cat:"Remodelación",prio:"estetica",est:"pendiente",fecha:"2025-09-01",resp:"juntos",notas:""},
+      {nombre:"Red protectora en balcón",cat:"Seguridad",prio:"estetica",est:"pendiente",fecha:"2025-09-01",resp:"juntos",notas:""},
+      {nombre:"Cambiar tablas de inodoros",cat:"Remodelación",prio:"estetica",est:"pendiente",fecha:"2025-09-15",resp:"juntos",notas:""}
+    ];
+    for(const t of mIni) { const id = await addItem('mudanza', t); mudData.push({...t, _id:id}); }
+  }
+  renderMud();
+
+  // Presupuestos
+  presData = await getAll('presupuestos'); renderPres();
+
+  // Rutinas custom
+  rutinasCustom = await getAll('rutinas'); renderRutinasCustom();
+
+  // Tips custom
+  tipsCustom = await getAll('tips'); renderTips(lastCtxTips);
+
+  // Ambientes
+  ambientes.forEach(async amb => {
+    const ambDoc = await getDoc(doc(db, 'ambientes', amb));
+    if(ambDoc.exists()) {
+      ambData[amb] = {...ambData[amb], ...ambDoc.data()};
+      const colorEl = document.getElementById('color-'+amb);
+      const arreglosEl = document.getElementById('arreglos-'+amb);
+      const decoEl = document.getElementById('deco-'+amb);
+      if(colorEl) colorEl.value = ambData[amb].color||'';
+      if(arreglosEl) arreglosEl.value = ambData[amb].arreglos||'';
+      if(decoEl) decoEl.value = ambData[amb].deco||'';
+    }
+  });
+
+  // Referencias de inspiración
+  const refs = await getAll('refs');
+  refs.sort((a,b) => (a.ts||0)-(b.ts||0));
+  refs.forEach(ref => {
+    const grid = document.getElementById('refs-'+ref.amb);
+    if(grid) {
+      const emp = grid.querySelector('p.empty-ref');
+      if(emp) emp.remove();
+      renderRef(ref, grid);
+    }
+  });
+
+  // Close modals on bg click
+  document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+}
+
 window.detectCtxTips = detectCtxTips;
 </script>
 </body>
-</html>
+</html>function makeTipCard(t, ctxTips) {
+  const badgeClass = {embarazo:'tip-badge-embarazo',crianza:'tip-badge-crianza',deco:'tip-badge-deco',custom:'tip-badge-custom',auto:'tip-badge-auto'};
+  const catLabel = {embarazo:'🤰 Embarazo',crianza:'👶 Crianza',deco:'🎨 Deco',custom:'💜 Nuestro',auto:'✨ Automático'};
+  const isAuto = ctxTips && ctxTips.includes(t.texto);
+  const cat = isAuto ? 'auto' : t.cat;
+  return `<div class="tip-card${isAuto?' tip-card-auto':''}">
+    <div class="tip-card-top">
+      <span class="tip-icon">${t.icon||'💡'}</span>
+      <span class="tip-badge ${badgeClass[cat]||'tip-badge-embarazo'}">${catLabel[cat]||cat}</span>
+    </div>
+    <div class="tip-tag">${t.etq}</div>
+    <p>${t.texto}</p>
+    ${t.source?`<a href="${t.source}" class="tip-source" target="_blank">↗ ${t.sourceLabel||'Ver fuente'}</a>`:''}
+    ${t.custom?`<button class="btn-sm del" style="margin-top:6px;align-self:flex-start" onclick="borrarTipCustom('${t._id}')">🗑️</button>`:''}
+  </div>`;
+}
+
+function renderTips(ctxTips) {
+  ctxTips = ctxTips || [];
+  const cont = document.getElementById('lista-tips');
+  const baseTips = tipsBase.map(t=>({...t,custom:false}));
+  const customTips = tipsCustom.map(t=>({...t,custom:true,icon:t.icon||'💜'}));
+
+  // Ctx tips that are NOT already in base (truly extra)
+  const ctxExtra = ctxTips.filter(texto => !baseTips.find(t=>t.texto===texto));
+  const ctxCards = ctxExtra.map(texto => ({texto, cat:'auto', etq:'Sugerido automáticamente', icon:'✨', custom:false}));
+
+  // Build "auto" set = ctxCards + base tips that match ctx
+  const autoBase = baseTips.filter(t => ctxTips.includes(t.texto));
+
+  let filtered;
+  if(filtroTips === 'todos') {
+    filtered = [...ctxCards, ...baseTips, ...customTips];
+  } else if(filtroTips === 'automatico') {
+    filtered = [...ctxCards, ...autoBase];
+  } else if(filtroTips === 'custom') {
+    filtered = customTips;
+  } else {
+    filtered = [...baseTips, ...customTips].filter(t => t.cat === filtroTips);
+    // Also add ctx cards for auto filter
+    if(filtroTips === 'auto') filtered = [...ctxCards, ...autoBase];
+  }
+
+  if(!filtered.length){
+    cont.innerHTML='<p style="font-size:13px;color:var(--text3);font-style:italic;padding:1rem">Sin tips con este filtro.</p>';
+    return;
+  }
+  cont.innerHTML = `<div class="tips-grid">${filtered.map(t=>makeTipCard(t, ctxTips)).join('')}</div>`;
+}
+
