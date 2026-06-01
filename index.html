@@ -511,7 +511,26 @@ const AMBS=["cocina","living","patio","toilette","bano","hab-principal","hab-oli
 const AMBN={cocina:"Cocina",living:"Living",patio:"Patio",toilette:"Toilette",bano:"Baño principal","hab-principal":"Hab. principal","hab-olivia":"Hab. Olivia 🌼",balcon:"Balcón"};
 let ambData={};AMBS.forEach(a=>{ambData[a]={color:"",arreglos:"",deco:""};});
 let currentAmb="cocina";
-function calcSem(semBase,diasBase,fechaRef){if(!fechaRef)return{sem:semBase,dias:diasBase};const diff=Math.floor((new Date()-new Date(fechaRef+"T00:00:00"))/(864e5));const total=semBase*7+diasBase+diff;return{sem:Math.floor(total/7),dias:total%7};}
+function calcSem(semBase,diasBase,fechaRef,fpp){
+  // If we have FPP, calculate backwards from it — most accurate
+  if(fpp){
+    const fppDate=new Date(fpp+"T00:00:00");
+    const hoy=new Date();hoy.setHours(0,0,0,0);
+    const diasHastaFPP=Math.round((fppDate-hoy)/(864e5));
+    const diasEmbarazo=280-diasHastaFPP; // 280 dias = 40 semanas
+    if(diasEmbarazo>0){
+      return{sem:Math.floor(diasEmbarazo/7),dias:diasEmbarazo%7};
+    }
+  }
+  // Fallback: calculate from saved reference date
+  if(fechaRef){
+    const diff=Math.floor((new Date()-new Date(fechaRef+"T00:00:00"))/(864e5));
+    const total=semBase*7+diasBase+diff;
+    return{sem:Math.floor(total/7),dias:total%7};
+  }
+  // No reference: return saved values
+  return{sem:semBase,dias:diasBase};
+}
 function updateEmbUI(sem,dias,fpp){
   const pct=Math.min(Math.round(((sem+dias/7)/40)*100),100),rest=Math.max(0,40-sem);
   document.getElementById("prog-fill").style.width=pct+"%";
@@ -536,7 +555,7 @@ function renderRI(sem){
   const r=getRE(sem);
   document.getElementById("rutina-info").innerHTML=`<div class="rutina-grid">${r.bl.map(b=>`<div><div class="rutina-hora">${b.h}</div><ul class="rutina-lista">${b.it.map(i=>`<li>${i}</li>`).join("")}</ul></div>`).join("")}</div>`;
 }
-window.guardarEmbarazo=async()=>{const sem=parseInt(document.getElementById("inp-semana").value)||24,dias=parseInt(document.getElementById("inp-dias").value)||0,fpp=document.getElementById("inp-fpp").value,fechaRef=new Date().toISOString().slice(0,10);await sDoc("config","embarazo",{sem,dias,fpp,fechaRef});updateEmbUI(sem,dias,fpp);};
+window.guardarEmbarazo=async()=>{const sem=parseInt(document.getElementById("inp-semana").value)||24,dias=parseInt(document.getElementById("inp-dias").value)||0,fpp=document.getElementById("inp-fpp").value,fechaRef=new Date().toISOString().slice(0,10);await sDoc("config","embarazo",{sem,dias,fpp,fechaRef});const calc=calcSem(sem,dias,fechaRef,fpp);updateEmbUI(calc.sem,calc.dias,fpp);};
 window.guardarNota=async(key,elId)=>{await sDoc("notas",key,{texto:document.getElementById(elId).value,updated:Date.now()});};
 function renderTurnos(){
   const lista=document.getElementById("lista-turnos");
@@ -719,7 +738,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){document.getElement
 async function initApp(){
   initAmbPanels();
   const ed=await getDoc(doc(db,"config","embarazo"));
-  if(ed.exists()){const d=ed.data(),c=calcSem(d.sem||24,d.dias||0,d.fechaRef||null);document.getElementById("inp-semana").value=c.sem;document.getElementById("inp-dias").value=c.dias;document.getElementById("inp-fpp").value=d.fpp||"";updateEmbUI(c.sem,c.dias,d.fpp||"");}else{updateEmbUI(24,0,"");}
+  if(ed.exists()){const d=ed.data(),c=calcSem(d.sem||24,d.dias||0,d.fechaRef||null,d.fpp||null);document.getElementById("inp-semana").value=c.sem;document.getElementById("inp-dias").value=c.dias;document.getElementById("inp-fpp").value=d.fpp||"";updateEmbUI(c.sem,c.dias,d.fpp||"");}else{updateEmbUI(24,0,"");}
   const ne=await getDoc(doc(db,"notas","embarazo"));if(ne.exists())document.getElementById("nota-embarazo").value=ne.data().texto||"";
   const no=await getDoc(doc(db,"notas","obstetra"));if(no.exists())document.getElementById("nota-obstetra").value=no.data().texto||"";
   const nm=await getDoc(doc(db,"notas","mudanza"));if(nm.exists())document.getElementById("nota-mudanza").value=nm.data().texto||"";
@@ -743,6 +762,8 @@ async function initApp(){
   const refs=await gAll("refs");refs.sort((a,b)=>(a.ts||0)-(b.ts||0));refs.forEach(ref=>{const grid=document.getElementById("refs-"+ref.amb);if(grid){const emp=grid.querySelector("p.empty-ref");if(emp)emp.remove();renderRef(ref,grid);}});
 }
 window.dItem=dItem;
+window.confirm2=confirm2;
+window.del2=del2;
 </script>
 </body>
 </html>
