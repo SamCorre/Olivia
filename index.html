@@ -205,7 +205,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);fon
   <div class="card">
     <div class="card-title">🩺 Dudas para próxima consulta</div>
     <p class="section-intro">Anotá acá preguntas y temas a repasar con la obstetra antes del próximo control.</p>
-    <textarea class="nota-box" id="nota-obstetra" placeholder="Ej: Preguntar por la curva de glucosa, mostrar análisis..."></textarea>
+    <textarea class="nota-box" id="nota-obstetra" placeholder="Ej: Preguntar por la curva de glucosa, mostrar análisis..." style="min-height:60px;overflow:hidden;resize:none" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
     <button class="btn-sm done" style="margin-top:8px" onclick="guardarNota('obstetra','nota-obstetra')">💾 Guardar</button>
   </div>
   <div class="card">
@@ -754,7 +754,7 @@ async function initApp(){
   const ed=await getDoc(doc(db,"config","embarazo"));
   if(ed.exists()){const d=ed.data(),c=calcSem(d.sem||24,d.dias||0,d.fechaRef||null,d.fpp||null);document.getElementById("inp-semana").value=c.sem;document.getElementById("inp-dias").value=c.dias;document.getElementById("inp-fpp").value=d.fpp||"";updateEmbUI(c.sem,c.dias,d.fpp||"");}else{updateEmbUI(24,0,"");}
   const ne=await getDoc(doc(db,"notas","embarazo"));if(ne.exists())document.getElementById("nota-embarazo").value=ne.data().texto||"";
-  const no=await getDoc(doc(db,"notas","obstetra"));if(no.exists())document.getElementById("nota-obstetra").value=no.data().texto||"";
+  const no=await getDoc(doc(db,"notas","obstetra"));if(no.exists()){const el=document.getElementById("nota-obstetra");el.value=no.data().texto||"";el.style.height="auto";el.style.height=el.scrollHeight+"px";}
   const nm=await getDoc(doc(db,"notas","mudanza"));if(nm.exists())document.getElementById("nota-mudanza").value=nm.data().texto||"";
   turnosData=await gAll("turnos");renderTurnos();
   comprasData=await gAll("compras");
