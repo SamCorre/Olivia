@@ -174,11 +174,11 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);fon
 <div class="nav-wrap"><div class="nav">
   <button class="nav-btn active" onclick="showSection('embarazo')">🤰 Embarazo</button>
   <button class="nav-btn" onclick="showSection('turnos')">📅 Turnos</button>
+  <button class="nav-btn" onclick="showSection('tareas')">✅ Tareas</button>
+  <button class="nav-btn" onclick="showSection('mudanza')">🏠 Mudanza</button>
   <button class="nav-btn" onclick="showSection('compras')">🛍️ Compras</button>
   <button class="nav-btn" onclick="showSection('inventario')">👕 Ropa Olivia</button>
-  <button class="nav-btn" onclick="showSection('tareas')">✅ Tareas</button>
   <button class="nav-btn" onclick="showSection('rutinas')">🕐 Rutinas</button>
-  <button class="nav-btn" onclick="showSection('mudanza')">🏠 Mudanza</button>
   <button class="nav-btn" onclick="showSection('tips')">💡 Tips</button>
 </div></div>
 <div class="app">
@@ -225,9 +225,9 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);fon
   <div class="card">
     <div class="card-title">🛍️ Lista de compras</div>
     <div class="filter-row" id="filtros-compras">
-      <button class="filter-btn active" onclick="filtrarC('todas',this)">Todas</button>
+      <button class="filter-btn" onclick="filtrarC('todas',this)">Todas</button>
       <button class="filter-btn" onclick="filtrarC('finalizado',this)">✓ Listas</button>
-      <button class="filter-btn" onclick="filtrarC('pendiente',this)">Pendientes</button>
+      <button class="filter-btn active" onclick="filtrarC('pendiente',this)">Pendientes</button>
       <button class="filter-btn" onclick="filtrarC('alto',this)">⚠ Urgente</button>
       <button class="filter-btn" onclick="filtrarC('indumentaria',this)">Ropa</button>
       <button class="filter-btn" onclick="filtrarC('higiene',this)">Higiene</button>
@@ -251,7 +251,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);fon
     <div class="card-title">👕 Detalle completo</div>
     <div class="filter-row" id="filtros-inv">
       <button class="filter-btn active" onclick="filtrarI('todas',this)">Todas</button>
-      <button class="filter-btn" onclick="filtrarI('Media',this)">🌤 Entretiembre</button>
+      <button class="filter-btn" onclick="filtrarI('Media',this)">🌤 Media</button>
       <button class="filter-btn" onclick="filtrarI('Verano',this)">☀️ Verano</button>
       <button class="filter-btn" onclick="filtrarI('Invierno',this)">❄️ Invierno</button>
       <button class="filter-btn" onclick="filtrarI('regalo',this)">🎁 Regalos</button>
@@ -398,13 +398,58 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);fon
 </div></div>
 <div class="modal-bg" id="modal-inv"><div class="modal">
   <h3 id="mi-titulo">Agregar prenda</h3>
-  <div class="modal-row"><label>Tipo de prenda</label><input type="text" id="mi-prenda"></div>
-  <div class="modal-row"><label>Detalle</label><input type="text" id="mi-detalle"></div>
+  <div class="modal-row"><label>Tipo de prenda</label>
+    <select id="mi-prenda">
+      <option value="">Seleccioná...</option>
+      <option>Body</option>
+      <option>Conjunto</option>
+      <option>Remera</option>
+      <option>Pantalón</option>
+      <option>Short</option>
+      <option>Calza</option>
+      <option>Pollera</option>
+      <option>Campera</option>
+      <option>Saquito</option>
+      <option>Abrigo</option>
+      <option>Enterito</option>
+      <option>Pelele</option>
+      <option>Calzado</option>
+      <option>Accesorio</option>
+      <option>Manta</option>
+      <option>Otro</option>
+    </select>
+  </div>
+  <div class="modal-row"><label>Detalle (color, tela, descripción)</label><input type="text" id="mi-detalle" placeholder="Ej: Rosa con flores, algodón..."></div>
+  <div class="modal-row"><label>Talle / edad</label>
+    <select id="mi-talle">
+      <option value="">Seleccioná...</option>
+      <option>RN (Recién nacido)</option>
+      <option>0-3 meses</option>
+      <option>3-6 meses</option>
+      <option>6-9 meses</option>
+      <option>9-12 meses</option>
+      <option>12-18 meses</option>
+      <option>18-24 meses</option>
+      <option>2 años</option>
+      <option>Único / sin talle</option>
+    </select>
+  </div>
+  <div class="modal-row"><label>Estación</label>
+    <select id="mi-estacion">
+      <option value="Media">Media / Entretiembre</option>
+      <option value="Verano">Verano</option>
+      <option value="Invierno">Invierno</option>
+    </select>
+  </div>
   <div class="modal-row"><label>Cantidad</label><input type="number" id="mi-cant" value="1" min="1"></div>
-  <div class="modal-row"><label>Talle</label><input type="text" id="mi-talle" placeholder="RN, Talle 0, 1-3M..."></div>
-  <div class="modal-row"><label>Estación</label><select id="mi-estacion"><option>Media</option><option>Verano</option><option>Invierno</option></select></div>
-  <div class="modal-row"><label>Origen</label><select id="mi-origen"><option value="regalo">🎁 Regalo</option><option value="comprado">💳 Comprado</option></select></div>
-  <div class="modal-row"><label>De quién</label><input type="text" id="mi-de"></div>
+  <div class="modal-row"><label>Origen</label>
+    <select id="mi-origen">
+      <option value="regalo">🎁 Regalo</option>
+      <option value="comprado">💳 Comprado</option>
+      <option value="heredado">🤝 Heredado / prestado</option>
+    </select>
+  </div>
+  <div class="modal-row"><label>De quién</label><input type="text" id="mi-de" placeholder="Nombre de quien lo regaló / prestó..."></div>
   <div class="modal-actions"><button class="btn-cancel" onclick="cerrarModal('modal-inv')">Cancelar</button><button class="btn-add" onclick="guardarItem('inv')">💾 Guardar</button></div>
 </div></div>
 <div class="modal-bg" id="modal-tarea"><div class="modal">
@@ -513,7 +558,7 @@ function detectCtx(data){const txt=JSON.stringify(data).toLowerCase();const tips
 let lastCtx=[];
 function checkCtx(){lastCtx=detectCtx({mudData,presData,ambData});if(filtroTips==="todos"||filtroTips==="automatico")renderTips(lastCtx);}
 let turnosData=[],comprasData=[],invData=[],tareasData=[],mudData=[],presData=[],rutinasCustom=[],tipsCustom=[];
-let filtroC="todas",filtroI="todas",filtroT="todas",filtroMud="todas",filtroTips="todos";
+let filtroC="pendiente",filtroI="todas",filtroT="todas",filtroMud="todas",filtroTips="todos";
 const AMBS=["cocina","living","patio","toilette","bano","hab-principal","hab-olivia","balcon"];
 const AMBN={cocina:"Cocina",living:"Living",patio:"Patio",toilette:"Toilette",bano:"Baño principal","hab-principal":"Hab. principal","hab-olivia":"Hab. Olivia 🌼",balcon:"Balcón"};
 let ambData={};AMBS.forEach(a=>{ambData[a]={color:"",arreglos:"",deco:""};});
@@ -598,7 +643,10 @@ function renderCompras(){
   const catM={indumentaria:"Ropa",higiene:"Higiene",hogar:"Hogar",mama:"Mamá",otro:"Otro"};
   const catC={indumentaria:"pill-ind",higiene:"pill-hig",hogar:"pill-hog",mama:"pill-mam",otro:"pill-otr"};
   const prioM={alto:`<span style="font-size:11px;font-weight:500;color:var(--red)">⚠ Urgente</span>`,medio:`<span style="font-size:11px;color:var(--yellow)">Media</span>`,bajo:`<span style="font-size:11px;color:var(--green)">Baja</span>`,regalo:`<span style="font-size:11px;color:var(--lila)">Regalo</span>`,her:`<span style="font-size:11px;color:var(--gonza)">Heredado</span>`};
-  const filtered=comprasData.filter(i=>filtroC==="todas"||(filtroC==="finalizado"&&i.estado==="finalizado")||(filtroC==="pendiente"&&i.estado==="pendiente")||(filtroC==="alto"&&i.prio==="alto")||(filtroC===i.cat));
+  const prioO={alto:0,medio:1,bajo:2,regalo:3,her:4};
+  const filtered=comprasData
+    .filter(i=>filtroC==="todas"||(filtroC==="finalizado"&&i.estado==="finalizado")||(filtroC==="pendiente"&&i.estado==="pendiente")||(filtroC==="alto"&&i.prio==="alto")||(filtroC===i.cat))
+    .sort((a,b)=>(prioO[a.prio]??5)-(prioO[b.prio]??5));
   if(!filtered.length){lista.innerHTML="<p style='font-size:13px;color:var(--text3);font-style:italic;padding:1rem 0'>Sin ítems.</p>";document.getElementById("compras-ctr").textContent="";return;}
   lista.innerHTML=filtered.map(item=>{const chk=item.estado==="finalizado";return`<div class="compra-row"><div style="display:flex;align-items:flex-start;gap:8px">
     <div class="c-check${chk?" checked":""}" style="margin-top:2px;cursor:pointer" onclick="toggleCompra('${item._id}')">${chk?"✓":""}</div>
@@ -615,61 +663,70 @@ window.filtrarC=(f,btn)=>{document.querySelectorAll("#filtros-compras .filter-bt
 function renderInv(){
   const tbody=document.getElementById("inv-tbody");
   const filtered=invData.filter(i=>filtroI==="todas"||(filtroI===i.estacion)||(filtroI===i.origen));
-  tbody.innerHTML=filtered.map(item=>`<tr><td style="font-weight:500">${item.prenda}</td><td style="color:var(--text2)">${item.detalle}</td><td style="text-align:center">${item.cant}</td><td><span class="talle-pill">${item.talle}</span></td><td style="font-size:12px;color:var(--text2)">${item.estacion}</td><td><span class="${item.origen==="regalo"?"orig-regalo":"orig-comprado"}">${item.origen==="regalo"?"🎁 Regalo":"💳 Comprado"}</span></td><td style="font-size:12px;color:var(--text2)">${item.de}</td><td style="white-space:nowrap"><button class="btn-sm edit" onclick="abrirModal('modal-inv','${item._id}','inv')" style="margin-right:4px">✏️</button><button class="btn-sm del" onclick="confirm2('¿Eliminás esta prenda?',()=>del2('inventario','${item._id}'))">🗑️</button></td></tr>`).join("");
+  tbody.innerHTML=filtered.map(item=>`<tr><td style="font-weight:500">${item.prenda}</td><td style="color:var(--text2)">${item.detalle}</td><td style="text-align:center">${item.cant}</td><td><span class="talle-pill">${item.talle}</span></td><td style="font-size:12px;color:var(--text2)">${item.estacion}</td><td><span class="${item.origen==="regalo"?"orig-regalo":item.origen==="heredado"?"orig-comprado":"orig-comprado"}">${item.origen==="regalo"?"🎁 Regalo":item.origen==="heredado"?"🤝 Heredado":"💳 Comprado"}</span></td><td style="font-size:12px;color:var(--text2)">${item.de}</td><td style="white-space:nowrap"><button class="btn-sm edit" onclick="abrirModal('modal-inv','${item._id}','inv')" style="margin-right:4px">✏️</button><button class="btn-sm del" onclick="confirm2('¿Eliminás esta prenda?',()=>del2('inventario','${item._id}'))">🗑️</button></td></tr>`).join("");
   const tot=invData.reduce((s,i)=>s+i.cant,0);
   document.getElementById("inv-ctr").textContent=`${filtered.length} tipos · ${tot} prendas totales de Olivia`;
 }
 function renderInvResumen(){
-  if(!document.getElementById('inv-resumen-card'))return;
+  const card=document.getElementById('inv-resumen-card');
+  if(!card)return;
+  if(!invData.length){card.style.display='none';return;}
+  card.style.display='';
   const total=invData.reduce((s,i)=>s+i.cant,0);
-  
-  // Por talle/edad
+
+  // ── Por talle/edad ──
   const talles={};
   invData.forEach(i=>{
     const t=i.talle||'Sin talle';
     if(!talles[t])talles[t]=0;
     talles[t]+=i.cant;
   });
-  const talleOrder=['RN','Talle 0','1-3 M','3-6 M','6-9 M','9-12 M','Talle 1','Talle 2','+1 año'];
-  const tallesSorted=Object.entries(talles).sort((a,b)=>{const ia=talleOrder.indexOf(a[0]),ib=talleOrder.indexOf(b[0]);return(ia===-1?99:ia)-(ib===-1?99:ib);});
-  
-  document.getElementById('inv-resumen-talles').innerHTML=`
-    <div style="font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Por talle / edad — ${total} prendas en total</div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px">
-      ${tallesSorted.map(([t,n])=>`<div style="background:var(--lila-light);border:1px solid var(--lila-border);border-radius:var(--radius-sm);padding:8px 14px;text-align:center;min-width:80px"><div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--lila)">${n}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${t}</div></div>`).join('')}
-    </div>`;
-  
-  // Por categoría de prenda
-  const cats={
-    'Conjunto':['conjunto'],
-    'Body':['body'],
-    'Pantalón':['pantalón','pantalon'],
-    'Remera / camiseta':['remera','camiseta','reme'],
-    'Abrigo / saquito':['abrigo','saquito','polar','camperita'],
-    'Calza':['calza'],
-    'Enterito / pelele':['enterito','pelele'],
-    'Accesorio':['gorro','medias','babero','ojotas','calzado','zapato'],
-    'Otro':[]
-  };
-  const catCounts={};
-  Object.keys(cats).forEach(k=>catCounts[k]=0);
-  invData.forEach(item=>{
-    const prenda=(item.prenda||'').toLowerCase();
-    let found=false;
-    for(const [cat,kws] of Object.entries(cats)){
-      if(cat==='Otro')continue;
-      if(kws.some(kw=>prenda.includes(kw))){catCounts[cat]+=item.cant;found=true;break;}
-    }
-    if(!found)catCounts['Otro']+=item.cant;
+  const talleOrder=['RN (Recién nacido)','0-3 meses','3-6 meses','6-9 meses','9-12 meses','12-18 meses','18-24 meses','2 años','Único / sin talle'];
+  const tallesSorted=Object.entries(talles).sort((a,b)=>{
+    const ia=talleOrder.findIndex(t=>a[0].includes(t.split(' ')[0]));
+    const ib=talleOrder.findIndex(t=>b[0].includes(t.split(' ')[0]));
+    const ra=talleOrder.indexOf(a[0]),rb=talleOrder.indexOf(b[0]);
+    const fa=ra>=0?ra:(ia>=0?ia:99),fb=rb>=0?rb:(ib>=0?ib:99);
+    return fa-fb;
   });
-  
-  const catIcons={'Conjunto':'👗','Body':'👶','Pantalón':'👖','Remera / camiseta':'👕','Abrigo / saquito':'🧥','Calza':'🩱','Enterito / pelele':'🪡','Accesorio':'🧢','Otro':'📦'};
-  const catFiltered=Object.entries(catCounts).filter(([k,v])=>v>0);
-  
+
+  document.getElementById('inv-resumen-talles').innerHTML=`
+    <div style="font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">
+      Por talle / edad — <span style="color:var(--lila)">${total} prendas en total</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      ${tallesSorted.map(([t,n])=>`
+        <div style="background:var(--lila-light);border:1px solid var(--lila-border);border-radius:var(--radius-sm);padding:8px 14px;text-align:center;min-width:70px">
+          <div style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--lila);line-height:1">${n}</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:4px;line-height:1.3">${t}</div>
+        </div>`).join('')}
+    </div>`;
+
+  // ── Por tipo de prenda (exact match con los valores del dropdown) ──
+  const tipoIcons={
+    'Body':'👶','Conjunto':'👗','Remera':'👕','Pantalón':'👖','Short':'🩳',
+    'Calza':'🩱','Pollera':'👗','Campera':'🧥','Saquito':'🧶','Abrigo':'🧥',
+    'Enterito':'🐥','Pelele':'🐣','Calzado':'👟','Accesorio':'🧢',
+    'Manta':'🛏️','Otro':'📦'
+  };
+  const tipos={};
+  invData.forEach(item=>{
+    const p=item.prenda||'Otro';
+    if(!tipos[p])tipos[p]=0;
+    tipos[p]+=item.cant;
+  });
+  const tiposSorted=Object.entries(tipos).sort((a,b)=>b[1]-a[1]);
+
   document.getElementById('inv-resumen-tipos').innerHTML=`
-    <div style="font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Por tipo de prenda</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px">
-      ${catFiltered.map(([cat,n])=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;text-align:center"><div style="font-size:20px;margin-bottom:4px">${catIcons[cat]||'📦'}</div><div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent)">${n}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${cat}</div></div>`).join('')}
+    <div class="divider"></div>
+    <div style="font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">Por tipo de prenda</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px">
+      ${tiposSorted.map(([tipo,n])=>`
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 8px;text-align:center">
+          <div style="font-size:22px;margin-bottom:4px">${tipoIcons[tipo]||'📦'}</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent);line-height:1">${n}</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:4px">${tipo}</div>
+        </div>`).join('')}
     </div>`;
 }
 window.filtrarI=(f,btn)=>{document.querySelectorAll("#filtros-inv .filter-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");filtroI=f;renderInv();};
