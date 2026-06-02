@@ -210,7 +210,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);fon
   </div>
   <div class="card">
     <div class="card-title">📝 Notas de la semana</div>
-    <textarea class="nota-box" id="nota-embarazo" placeholder="Síntomas, sensaciones, cosas que quiero recordar..."></textarea>
+    <textarea class="nota-box" id="nota-embarazo" placeholder="Síntomas, sensaciones, cosas que quiero recordar..." style="min-height:60px;overflow:hidden;resize:none" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
     <button class="btn-sm" style="margin-top:8px" onclick="guardarNota('embarazo','nota-embarazo')">💾 Guardar</button>
   </div>
 </div>
@@ -240,15 +240,22 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);fon
   </div>
 </div>
 <div id="sec-inventario" class="section">
+  <!-- Resumen visual -->
+  <div class="card" id="inv-resumen-card">
+    <div class="card-title">📊 Resumen del guardarropa de Olivia</div>
+    <div id="inv-resumen-talles" style="margin-bottom:1rem"></div>
+    <div id="inv-resumen-tipos"></div>
+  </div>
+  <!-- Detalle -->
   <div class="card">
-    <div class="card-title">👕 Ropa de Olivia</div>
+    <div class="card-title">👕 Detalle completo</div>
     <div class="filter-row" id="filtros-inv">
       <button class="filter-btn active" onclick="filtrarI('todas',this)">Todas</button>
-      <button class="filter-btn" onclick="filtrarI('RN',this)">RN</button>
-      <button class="filter-btn" onclick="filtrarI('1-3',this)">1–3 M</button>
-      <button class="filter-btn" onclick="filtrarI('3-6',this)">3–6 M</button>
-      <button class="filter-btn" onclick="filtrarI('regalo',this)">Regalos</button>
-      <button class="filter-btn" onclick="filtrarI('comprado',this)">Comprado</button>
+      <button class="filter-btn" onclick="filtrarI('Media',this)">🌤 Entretiembre</button>
+      <button class="filter-btn" onclick="filtrarI('Verano',this)">☀️ Verano</button>
+      <button class="filter-btn" onclick="filtrarI('Invierno',this)">❄️ Invierno</button>
+      <button class="filter-btn" onclick="filtrarI('regalo',this)">🎁 Regalos</button>
+      <button class="filter-btn" onclick="filtrarI('comprado',this)">💳 Comprado</button>
     </div>
     <div style="overflow-x:auto"><table class="inv-table">
       <thead><tr><th>Prenda</th><th>Detalle</th><th>Cant.</th><th>Talle</th><th>Estación</th><th>Origen</th><th>De quién</th><th></th></tr></thead>
@@ -338,7 +345,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);fon
   <div id="panel-notas-mud" class="mud-panel">
     <div class="card">
       <div class="card-title">📝 Notas de mudanza</div>
-      <textarea class="nota-box" id="nota-mudanza" placeholder="Contacto del fletero, medidas, decisiones pendientes..."></textarea>
+      <textarea class="nota-box" id="nota-mudanza" placeholder="Contacto del fletero, medidas, decisiones pendientes..." style="min-height:60px;overflow:hidden;resize:none" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
       <button class="btn-sm" style="margin-top:8px" onclick="guardarNota('mudanza','nota-mudanza')">💾 Guardar</button>
     </div>
   </div>
@@ -607,10 +614,63 @@ window.toggleCompra=async(id)=>{const i=comprasData.find(c=>c._id===id);if(!i)re
 window.filtrarC=(f,btn)=>{document.querySelectorAll("#filtros-compras .filter-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");filtroC=f;renderCompras();};
 function renderInv(){
   const tbody=document.getElementById("inv-tbody");
-  const filtered=invData.filter(i=>filtroI==="todas"||(filtroI==="RN"&&i.talle.includes("RN"))||(filtroI==="1-3"&&i.talle.includes("1-3"))||(filtroI==="3-6"&&i.talle.includes("3-6"))||(filtroI===i.origen));
+  const filtered=invData.filter(i=>filtroI==="todas"||(filtroI===i.estacion)||(filtroI===i.origen));
   tbody.innerHTML=filtered.map(item=>`<tr><td style="font-weight:500">${item.prenda}</td><td style="color:var(--text2)">${item.detalle}</td><td style="text-align:center">${item.cant}</td><td><span class="talle-pill">${item.talle}</span></td><td style="font-size:12px;color:var(--text2)">${item.estacion}</td><td><span class="${item.origen==="regalo"?"orig-regalo":"orig-comprado"}">${item.origen==="regalo"?"🎁 Regalo":"💳 Comprado"}</span></td><td style="font-size:12px;color:var(--text2)">${item.de}</td><td style="white-space:nowrap"><button class="btn-sm edit" onclick="abrirModal('modal-inv','${item._id}','inv')" style="margin-right:4px">✏️</button><button class="btn-sm del" onclick="confirm2('¿Eliminás esta prenda?',()=>del2('inventario','${item._id}'))">🗑️</button></td></tr>`).join("");
   const tot=invData.reduce((s,i)=>s+i.cant,0);
   document.getElementById("inv-ctr").textContent=`${filtered.length} tipos · ${tot} prendas totales de Olivia`;
+}
+function renderInvResumen(){
+  if(!document.getElementById('inv-resumen-card'))return;
+  const total=invData.reduce((s,i)=>s+i.cant,0);
+  
+  // Por talle/edad
+  const talles={};
+  invData.forEach(i=>{
+    const t=i.talle||'Sin talle';
+    if(!talles[t])talles[t]=0;
+    talles[t]+=i.cant;
+  });
+  const talleOrder=['RN','Talle 0','1-3 M','3-6 M','6-9 M','9-12 M','Talle 1','Talle 2','+1 año'];
+  const tallesSorted=Object.entries(talles).sort((a,b)=>{const ia=talleOrder.indexOf(a[0]),ib=talleOrder.indexOf(b[0]);return(ia===-1?99:ia)-(ib===-1?99:ib);});
+  
+  document.getElementById('inv-resumen-talles').innerHTML=`
+    <div style="font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Por talle / edad — ${total} prendas en total</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      ${tallesSorted.map(([t,n])=>`<div style="background:var(--lila-light);border:1px solid var(--lila-border);border-radius:var(--radius-sm);padding:8px 14px;text-align:center;min-width:80px"><div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--lila)">${n}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${t}</div></div>`).join('')}
+    </div>`;
+  
+  // Por categoría de prenda
+  const cats={
+    'Conjunto':['conjunto'],
+    'Body':['body'],
+    'Pantalón':['pantalón','pantalon'],
+    'Remera / camiseta':['remera','camiseta','reme'],
+    'Abrigo / saquito':['abrigo','saquito','polar','camperita'],
+    'Calza':['calza'],
+    'Enterito / pelele':['enterito','pelele'],
+    'Accesorio':['gorro','medias','babero','ojotas','calzado','zapato'],
+    'Otro':[]
+  };
+  const catCounts={};
+  Object.keys(cats).forEach(k=>catCounts[k]=0);
+  invData.forEach(item=>{
+    const prenda=(item.prenda||'').toLowerCase();
+    let found=false;
+    for(const [cat,kws] of Object.entries(cats)){
+      if(cat==='Otro')continue;
+      if(kws.some(kw=>prenda.includes(kw))){catCounts[cat]+=item.cant;found=true;break;}
+    }
+    if(!found)catCounts['Otro']+=item.cant;
+  });
+  
+  const catIcons={'Conjunto':'👗','Body':'👶','Pantalón':'👖','Remera / camiseta':'👕','Abrigo / saquito':'🧥','Calza':'🩱','Enterito / pelele':'🪡','Accesorio':'🧢','Otro':'📦'};
+  const catFiltered=Object.entries(catCounts).filter(([k,v])=>v>0);
+  
+  document.getElementById('inv-resumen-tipos').innerHTML=`
+    <div style="font-size:12px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Por tipo de prenda</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px">
+      ${catFiltered.map(([cat,n])=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;text-align:center"><div style="font-size:20px;margin-bottom:4px">${catIcons[cat]||'📦'}</div><div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent)">${n}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${cat}</div></div>`).join('')}
+    </div>`;
 }
 window.filtrarI=(f,btn)=>{document.querySelectorAll("#filtros-inv .filter-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");filtroI=f;renderInv();};
 function renderTareas(){
@@ -714,7 +774,7 @@ async function del2(col,id){
   const entry=map[col];
   if(entry){const idx=entry.arr.findIndex(x=>x._id===id);if(idx>=0)entry.arr.splice(idx,1);entry.fn();}
 }
-const FM={turno:{n:"mtu-nombre",profesional:"mtu-profesional",fecha:"mtu-fecha",hora:"mtu-hora",direccion:"mtu-direccion",os:"mtu-os",notas:"mtu-notas"},compra:{nombre:"mc-nombre",cat:"mc-cat",prio:"mc-prio",precio:"mc-precio",link:"mc-link",notas:"mc-notas",estado:"mc-estado"},inv:{prenda:"mi-prenda",detalle:"mi-detalle",cant:"mi-cant",talle:"mi-talle",estacion:"mi-estacion",origen:"mi-origen",de:"mi-de"},tarea:{nombre:"mt-nombre",resp:"mt-resp",fecha:"mt-fecha",prio:"mt-prio",notas:"mt-notas"},mud:{nombre:"mm-nombre",prio:"mm-prio",cat:"mm-cat",est:"mm-est",fecha:"mm-fecha",resp:"mm-resp",notas:"mm-notas"},pres:{nombre:"mp-nombre",monto:"mp-monto",prov:"mp-prov",contacto:"mp-contacto",link:"mp-link",est:"mp-est",notas:"mp-notas"}};
+const FM={turno:{nombre:"mtu-nombre",profesional:"mtu-profesional",fecha:"mtu-fecha",hora:"mtu-hora",direccion:"mtu-direccion",os:"mtu-os",notas:"mtu-notas"},compra:{nombre:"mc-nombre",cat:"mc-cat",prio:"mc-prio",precio:"mc-precio",link:"mc-link",notas:"mc-notas",estado:"mc-estado"},inv:{prenda:"mi-prenda",detalle:"mi-detalle",cant:"mi-cant",talle:"mi-talle",estacion:"mi-estacion",origen:"mi-origen",de:"mi-de"},tarea:{nombre:"mt-nombre",resp:"mt-resp",fecha:"mt-fecha",prio:"mt-prio",notas:"mt-notas"},mud:{nombre:"mm-nombre",prio:"mm-prio",cat:"mm-cat",est:"mm-est",fecha:"mm-fecha",resp:"mm-resp",notas:"mm-notas"},pres:{nombre:"mp-nombre",monto:"mp-monto",prov:"mp-prov",contacto:"mp-contacto",link:"mp-link",est:"mp-est",notas:"mp-notas"}};
 const CM={turno:"turnos",compra:"compras",inv:"inventario",tarea:"tareas",mud:"mudanza",pres:"presupuestos"};
 const DM={turno:()=>turnosData,compra:()=>comprasData,inv:()=>invData,tarea:()=>tareasData,mud:()=>mudData,pres:()=>presData};
 const RM={turno:renderTurnos,compra:renderCompras,inv:renderInv,tarea:renderTareas,mud:renderMud,pres:renderPres};
@@ -738,7 +798,7 @@ window.guardarItem=(tipo)=>lock(async()=>{
   const editId=editIds[tipo];
   if(editId){await uItem(CM[tipo],editId,data);const idx=DM[tipo]().findIndex(x=>x._id===editId);if(idx>=0)DM[tipo]()[idx]={...DM[tipo]()[idx],...data};}
   else{const id=await aItem(CM[tipo],data);DM[tipo]().push({...data,_id:id});}
-  cerrarModal(MM[tipo]);RM[tipo]();checkCtx();
+  cerrarModal(MM[tipo]);RM[tipo]();if(tipo==='inv')renderInvResumen();checkCtx();
 });
 window.descargarBackup=async()=>{
   const btn=document.querySelector(".app-footer button");
@@ -747,15 +807,15 @@ window.descargarBackup=async()=>{
 };
 window.showSection=(id)=>{document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));document.getElementById("sec-"+id).classList.add("active");event.currentTarget.classList.add("active");window.scrollTo({top:0,behavior:"smooth"});if(id==="tips")checkCtx();};
 window.showMudTab=(tab,btn)=>{document.querySelectorAll(".mud-tab").forEach(b=>b.classList.remove("active"));btn.classList.add("active");document.querySelectorAll(".mud-panel").forEach(p=>p.classList.remove("active"));document.getElementById("panel-"+tab).classList.add("active");};
-document.querySelectorAll(".modal-bg").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("open");}));
+// Modales solo se cierran con botones
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){document.getElementById("lightbox").style.display="none";cerrarConfirm();}});
 async function initApp(){
   initAmbPanels();
   const ed=await getDoc(doc(db,"config","embarazo"));
   if(ed.exists()){const d=ed.data(),c=calcSem(d.sem||24,d.dias||0,d.fechaRef||null,d.fpp||null);document.getElementById("inp-semana").value=c.sem;document.getElementById("inp-dias").value=c.dias;document.getElementById("inp-fpp").value=d.fpp||"";updateEmbUI(c.sem,c.dias,d.fpp||"");}else{updateEmbUI(24,0,"");}
-  const ne=await getDoc(doc(db,"notas","embarazo"));if(ne.exists())document.getElementById("nota-embarazo").value=ne.data().texto||"";
+  const ne=await getDoc(doc(db,"notas","embarazo"));if(ne.exists()){const el=document.getElementById("nota-embarazo");el.value=ne.data().texto||"";el.style.height="auto";el.style.height=el.scrollHeight+"px";}
   const no=await getDoc(doc(db,"notas","obstetra"));if(no.exists()){const el=document.getElementById("nota-obstetra");el.value=no.data().texto||"";el.style.height="auto";el.style.height=el.scrollHeight+"px";}
-  const nm=await getDoc(doc(db,"notas","mudanza"));if(nm.exists())document.getElementById("nota-mudanza").value=nm.data().texto||"";
+  const nm=await getDoc(doc(db,"notas","mudanza"));if(nm.exists()){const el=document.getElementById("nota-mudanza");el.value=nm.data().texto||"";el.style.height="auto";el.style.height=el.scrollHeight+"px";}
   turnosData=await gAll("turnos");renderTurnos();
   comprasData=await gAll("compras");
   if(!comprasData.length){const ini=[{nombre:"Body Ardillitas + Set Salchi",cat:"indumentaria",prio:"bajo",precio:"$32.000",link:"",notas:"Llegó el 9/4. Lo compró Gonza",estado:"finalizado"},{nombre:"Baby Call Gadnic CAMBEB48",cat:"higiene",prio:"medio",precio:"$70.700",link:"",notas:"Comprado el 3/4",estado:"finalizado"},{nombre:"Almohada de embarazo",cat:"mama",prio:"bajo",precio:"$49.500",link:"",notas:"",estado:"finalizado"},{nombre:"Bañadera plegable Avanti Fresh + reductor + termómetro",cat:"higiene",prio:"bajo",precio:"",link:"",notas:"",estado:"finalizado"},{nombre:"Cuna / cama / colecho",cat:"hogar",prio:"her",precio:"Heredado",link:"",notas:"Nos lo prestaría Cami — confirmar",estado:"pendiente"},{nombre:"Lima de uñas eléctrica",cat:"higiene",prio:"her",precio:"Heredado",link:"",notas:"Nos lo daría Cami — confirmar",estado:"pendiente"},{nombre:"Remera SL",cat:"indumentaria",prio:"bajo",precio:"",link:"",notas:"Responsabilidad de Gonza",estado:"pendiente"},{nombre:"Mamadera Lansinoh NaturalWave",cat:"higiene",prio:"bajo",precio:"",link:"",notas:"Modelo recomendado por Cami",estado:"pendiente"},{nombre:"Chupete Avent Soothie 0-6m (pack x2)",cat:"higiene",prio:"bajo",precio:"",link:"https://articulo.mercadolibre.com.ar/MLA-1142543099",notas:"Modelo recomendado por Cami",estado:"pendiente"},{nombre:"Asiento auto convertible Graco Triride",cat:"hogar",prio:"alto",precio:"$706.000",link:"",notas:"Sin esto no salen del hospital",estado:"pendiente"},{nombre:"Bolso/mochila maternal",cat:"otro",prio:"medio",precio:"",link:"",notas:"",estado:"pendiente"},{nombre:"Bolsa para dormir",cat:"otro",prio:"bajo",precio:"",link:"",notas:"Lo compra Sam",estado:"pendiente"},{nombre:"Luz roja nocturna + ruido blanco",cat:"hogar",prio:"bajo",precio:"",link:"",notas:"",estado:"pendiente"},{nombre:"Fular (Monada Little Stuff)",cat:"hogar",prio:"regalo",precio:"",link:"https://www.instagram.com/monada.littlestuff",notas:"Regalo posible",estado:"pendiente"},{nombre:"Almohadón de lactancia",cat:"mama",prio:"bajo",precio:"",link:"",notas:"",estado:"pendiente"},{nombre:"Set Baby Dove (shampoo + jabón líquido)",cat:"higiene",prio:"bajo",precio:"",link:"",notas:"Sirve hasta el año. Dato de Cami.",estado:"pendiente"}];for(const i of ini){const id=await aItem("compras",i);comprasData.push({...i,_id:id});}}
