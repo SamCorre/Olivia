@@ -251,9 +251,9 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);fon
     <div class="card-title">👕 Detalle completo</div>
     <div class="filter-row" id="filtros-inv">
       <button class="filter-btn active" onclick="filtrarI('todas',this)">Todas</button>
-      <button class="filter-btn" onclick="filtrarI('Media',this)">🌤 Media</button>
-      <button class="filter-btn" onclick="filtrarI('Verano',this)">☀️ Verano</button>
-      <button class="filter-btn" onclick="filtrarI('Invierno',this)">❄️ Invierno</button>
+      <button class="filter-btn" onclick="filtrarI('Media',this)">🌷🍂</button>
+      <button class="filter-btn" onclick="filtrarI('Verano',this)">☀️</button>
+      <button class="filter-btn" onclick="filtrarI('Invierno',this)">❄️</button>
       <button class="filter-btn" onclick="filtrarI('regalo',this)">🎁 Regalos</button>
       <button class="filter-btn" onclick="filtrarI('comprado',this)">💳 Comprado</button>
     </div>
@@ -423,29 +423,29 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);fon
   <div class="modal-row"><label>Talle / edad</label>
     <select id="mi-talle">
       <option value="">Seleccioná...</option>
-      <option>RN (Recién nacido)</option>
-      <option>0-3 meses</option>
-      <option>3-6 meses</option>
-      <option>6-9 meses</option>
-      <option>9-12 meses</option>
-      <option>12-18 meses</option>
-      <option>18-24 meses</option>
+      <option>RN</option>
+      <option>0-3 M</option>
+      <option>3-6 M</option>
+      <option>6-9 M</option>
+      <option>9-12 M</option>
+      <option>12-18 M</option>
+      <option>18-24 M</option>
       <option>2 años</option>
-      <option>Único / sin talle</option>
+      <option>Sin talle</option>
     </select>
   </div>
   <div class="modal-row"><label>Estación</label>
     <select id="mi-estacion">
-      <option value="Media">Media / Entretiembre</option>
-      <option value="Verano">Verano</option>
-      <option value="Invierno">Invierno</option>
+      <option value="Media">🌷🍂 Media</option>
+      <option value="Verano">☀️ Verano</option>
+      <option value="Invierno">❄️ Invierno</option>
     </select>
   </div>
   <div class="modal-row"><label>Cantidad</label><input type="number" id="mi-cant" value="1" min="1"></div>
   <div class="modal-row"><label>Origen</label>
     <select id="mi-origen">
       <option value="regalo">🎁 Regalo</option>
-      <option value="comprado">💳 Comprado</option>
+      <option value="comprado">💳 Compra</option>
       <option value="heredado">🤝 Heredado / prestado</option>
     </select>
   </div>
@@ -663,7 +663,7 @@ window.filtrarC=(f,btn)=>{document.querySelectorAll("#filtros-compras .filter-bt
 function renderInv(){
   const tbody=document.getElementById("inv-tbody");
   const filtered=invData.filter(i=>filtroI==="todas"||(filtroI===i.estacion)||(filtroI===i.origen));
-  tbody.innerHTML=filtered.map(item=>`<tr><td style="font-weight:500">${item.prenda}</td><td style="color:var(--text2)">${item.detalle}</td><td style="text-align:center">${item.cant}</td><td><span class="talle-pill">${item.talle}</span></td><td style="font-size:12px;color:var(--text2)">${item.estacion}</td><td><span class="${item.origen==="regalo"?"orig-regalo":item.origen==="heredado"?"orig-comprado":"orig-comprado"}">${item.origen==="regalo"?"🎁 Regalo":item.origen==="heredado"?"🤝 Heredado":"💳 Comprado"}</span></td><td style="font-size:12px;color:var(--text2)">${item.de}</td><td style="white-space:nowrap"><button class="btn-sm edit" onclick="abrirModal('modal-inv','${item._id}','inv')" style="margin-right:4px">✏️</button><button class="btn-sm del" onclick="confirm2('¿Eliminás esta prenda?',()=>del2('inventario','${item._id}'))">🗑️</button></td></tr>`).join("");
+  tbody.innerHTML=filtered.map(item=>`<tr><td style="font-weight:500">${item.prenda}</td><td style="color:var(--text2)">${item.detalle}</td><td style="text-align:center">${item.cant}</td><td><span class="talle-pill">${item.talle}</span></td><td style="font-size:12px;color:var(--text2)">${item.estacion==="Media"?"🌷🍂":item.estacion==="Verano"?"☀️":item.estacion==="Invierno"?"❄️":item.estacion}</td><td><span class="${item.origen==="regalo"?"orig-regalo":item.origen==="heredado"?"orig-comprado":"orig-comprado"}">${item.origen==="regalo"?"🎁 Regalo":item.origen==="heredado"?"🤝 Heredado":"💳 Compra"}</span></td><td style="font-size:12px;color:var(--text2)">${item.de}</td><td style="white-space:nowrap"><button class="btn-sm edit" onclick="abrirModal('modal-inv','${item._id}','inv')" style="margin-right:4px">✏️</button><button class="btn-sm del" onclick="confirm2('¿Eliminás esta prenda?',()=>del2('inventario','${item._id}'))">🗑️</button></td></tr>`).join("");
   const tot=invData.reduce((s,i)=>s+i.cant,0);
   document.getElementById("inv-ctr").textContent=`${filtered.length} tipos · ${tot} prendas totales de Olivia`;
 }
@@ -706,7 +706,7 @@ function renderInvResumen(){
   const tipoIcons={
     'Body':'👶','Conjunto':'👗','Remera':'👕','Pantalón':'👖','Short':'🩳',
     'Calza':'🩱','Pollera':'👗','Campera':'🧥','Saquito':'🧶','Abrigo':'🧥',
-    'Enterito':'🐥','Pelele':'🐣','Calzado':'👟','Accesorio':'🧢',
+    'Enterito':'🐥','Pelele':'🐣','Calzado':'👟','Accesorio':'🧦',
     'Manta':'🛏️','Otro':'📦'
   };
   const tipos={};
