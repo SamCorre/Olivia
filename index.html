@@ -681,7 +681,7 @@ function renderInvResumen(){
     if(!talles[t])talles[t]=0;
     talles[t]+=i.cant;
   });
-  const talleOrder=['RN (Recién nacido)','0-3 meses','3-6 meses','6-9 meses','9-12 meses','12-18 meses','18-24 meses','2 años','Único / sin talle'];
+  const talleOrder=['RN','0-3 M','3-6 M','6-9 M','9-12 M','12-18 M','18-24 M','Talle 0','Talle 1','2 años','+1 año','Sin talle'];
   const tallesSorted=Object.entries(talles).sort((a,b)=>{
     const ia=talleOrder.findIndex(t=>a[0].includes(t.split(' ')[0]));
     const ib=talleOrder.findIndex(t=>b[0].includes(t.split(' ')[0]));
@@ -729,7 +729,7 @@ function renderInvResumen(){
         </div>`).join('')}
     </div>`;
 }
-window.filtrarI=(f,btn)=>{document.querySelectorAll("#filtros-inv .filter-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");filtroI=f;renderInv();};
+window.filtrarI=(f,btn)=>{document.querySelectorAll("#filtros-inv .filter-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");filtroI=f;renderInv();renderInvResumen();};
 function renderTareas(){
   const cont=document.getElementById("lista-tareas");
   let filtered=tareasData.filter(t=>{if(filtroT==="sam")return t.resp==="sam";if(filtroT==="gonza")return t.resp==="gonza";if(filtroT==="juntos")return t.resp==="juntos";if(filtroT==="pendiente")return t.estado!=="hecho";if(filtroT==="hecho")return t.estado==="hecho";return true;});
@@ -879,7 +879,7 @@ async function initApp(){
   renderCompras();
   invData=await gAll("inventario");
   if(!invData.length){const ii=[{prenda:"Pantalón",detalle:"Largo color lila",cant:1,talle:"3-6 M",estacion:"Media",origen:"regalo",de:"Felix y Li"},{prenda:"Conjunto 3 prendas",detalle:"Calza + reme + gorro (blanco c/ estampa)",cant:1,talle:"RN",estacion:"Media",origen:"regalo",de:"Felix y Li"},{prenda:"Abrigo",detalle:"Con capucha floreada",cant:1,talle:"3-6 M",estacion:"Media",origen:"regalo",de:"Felix y Li"},{prenda:"Body",detalle:"Manga larga (blanco + verde + beige)",cant:3,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Cami y Mati (G)"},{prenda:"Pantalón",detalle:"Largo (blanco + verde + beige)",cant:3,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Cami y Mati (G)"},{prenda:"Body c/ pantalón",detalle:"Manga larga (blanco x2 + beige)",cant:3,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Ale y Richard"},{prenda:"Conjunto 3 prendas",detalle:"Body + calza + abrigo (perritos)",cant:1,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Ale y Richard"},{prenda:"Conjunto 3 prendas",detalle:"Calza + reme + gorro (blanco)",cant:1,talle:"Talle 1",estacion:"Media",origen:"regalo",de:"Ale y Richard"},{prenda:"Conjunto 2 prendas",detalle:"Body + abrigo (crema c/ bordado)",cant:1,talle:"1-3 M",estacion:"Media",origen:"regalo",de:"Ale y Richard"},{prenda:"Conjunto 3 prendas",detalle:"Calza + saquito + gorro (salchis)",cant:1,talle:"Talle 0",estacion:"Media",origen:"comprado",de:"Gonza"},{prenda:"Body",detalle:"Estampa ardillitas",cant:1,talle:"Talle 1",estacion:"Media",origen:"comprado",de:"Gonza"},{prenda:"Body",detalle:"Rosa liso",cant:1,talle:"Talle 0",estacion:"Media",origen:"regalo",de:"Marino (Lili)"},{prenda:"Conjunto 3 prendas",detalle:"Camperita polar + gorrito + medias (rosa)",cant:1,talle:"Talle 0",estacion:"Invierno",origen:"regalo",de:"Marino (Lili)"},{prenda:"Ojotas",detalle:"Winnie Pooh (para +1 año)",cant:1,talle:"+1 año",estacion:"Verano",origen:"regalo",de:"Mati y Cami (S)"},{prenda:"Body c/ pantalón",detalle:"Rosa claro flores + fucsia con moño",cant:1,talle:"Talle 0",estacion:"Media",origen:"regalo",de:"La Silvi"}];for(const i of ii){const id=await aItem("inventario",i);invData.push({...i,_id:id});}}
-  renderInv();
+  renderInv();renderInvResumen();
   tareasData=await gAll("tareas");
   if(!tareasData.length){const ti=[{nombre:"Preparar el cuarto de Olivia",resp:"juntos",fecha:"2025-08-01",prio:"alta",notas:"",estado:"pendiente"},{nombre:"Armar la bolsa para el hospital",resp:"sam",fecha:"2025-08-15",prio:"alta",notas:"",estado:"pendiente"},{nombre:"Instalar butaca Graco en el auto",resp:"gonza",fecha:"2025-08-10",prio:"alta",notas:"Sin esto no pueden salir del hospital",estado:"pendiente"},{nombre:"Confirmar cuna/colecho con Cami",resp:"juntos",fecha:"2025-07-15",prio:"alta",notas:"",estado:"pendiente"},{nombre:"Gestionar licencia por maternidad",resp:"sam",fecha:"2025-07-20",prio:"alta",notas:"",estado:"pendiente"},{nombre:"Gestionar licencia por paternidad",resp:"gonza",fecha:"2025-07-20",prio:"alta",notas:"",estado:"pendiente"},{nombre:"Visitar el hospital/clínica de parto",resp:"juntos",fecha:"2025-07-25",prio:"media",notas:"",estado:"pendiente"},{nombre:"Comprar mamadera Lansinoh NaturalWave",resp:"juntos",fecha:"2025-08-01",prio:"media",notas:"Recomendada por Cami",estado:"pendiente"},{nombre:"Comprar chupete Avent Soothie 0-6m x2",resp:"juntos",fecha:"2025-08-01",prio:"media",notas:"Recomendado por Cami",estado:"pendiente"}];for(const t of ti){const id=await aItem("tareas",t);tareasData.push({...t,_id:id});}}
   renderTareas();
