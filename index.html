@@ -114,9 +114,9 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);fon
 .amb-btn{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;font-family:"DM Sans",sans-serif;}
 .amb-btn.active{background:var(--lila-light);color:var(--lila);border-color:var(--lila-border);}
 .amb-panel{display:none;}.amb-panel.active{display:block;}
-.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px;}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:10px;}
 .ref-card{background:var(--bg2);border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);position:relative;}
-.ref-card img{width:100%;height:130px;object-fit:contain;background:var(--bg2);display:block;cursor:zoom-in;}
+.ref-card img{width:100%;height:180px;object-fit:cover;background:var(--bg2);display:block;cursor:zoom-in;border-radius:var(--radius-sm) var(--radius-sm) 0 0;}
 .ref-card-body{padding:8px;}.ref-card-note{font-size:11px;color:var(--text2);}
 .ref-card-del{position:absolute;top:4px;right:4px;background:rgba(255,255,255,0.9);border:none;border-radius:4px;padding:3px 7px;font-size:13px;cursor:pointer;}
 .ref-link-item{display:flex;align-items:flex-start;gap:8px;padding:8px;background:var(--bg2);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:6px;}
@@ -797,13 +797,38 @@ window.guardarRef=async()=>{
   else{rd.link=link;await fin(rd);}
 };
 function renderRef(ref,grid){
-  const card=document.createElement("div");card.setAttribute("data-ref-id",ref._id);
-  const delFn=`confirm2('¿Eliminás esta referencia?',async()=>{await dItem('refs','${ref._id}');document.querySelector('[data-ref-id="${ref._id}"]').remove()})`;
-  if(ref.tipo==="imagen"){card.className="ref-card";card.innerHTML=`<img src="${ref.data}" alt="ref" loading="lazy" onclick="document.getElementById('lightbox-img').src=this.src;document.getElementById('lightbox').style.display='flex'" title="Clic para ver en grande"><div class="ref-card-body"><div class="ref-card-note">${ref.nota||""}</div></div><button class="ref-card-del" onclick="${delFn}">🗑️</button>`;}
-  else if(ref.tipo==="link"){const domain=()=>{try{return new URL(ref.link).hostname;}catch(e){return"";}};card.className="ref-link-item";card.innerHTML=`<img src="https://www.google.com/s2/favicons?domain=${domain()}&sz=32" style="width:20px;height:20px;border-radius:4px;flex-shrink:0" onerror="this.style.display='none'"><div style="flex:1;min-width:0"><a href="${ref.link}" class="link-ext" target="_blank" style="word-break:break-all;font-size:12px">${ref.link}</a>${ref.nota?`<div class="ref-card-note">${ref.nota}</div>`:""}</div><button class="btn-sm del" onclick="${delFn}">🗑️</button>`;}
-  else{card.className="ref-link-item";card.innerHTML=`<span>📝</span><div style="flex:1;font-size:13px">${ref.nota}</div><button class="btn-sm del" onclick="${delFn}">🗑️</button>`;}
+  const card=document.createElement("div");
+  card.setAttribute("data-ref-id",ref._id);
+  if(ref.tipo==="imagen"){
+    card.className="ref-card";
+    card.innerHTML=`<img src="${ref.data}" alt="ref" loading="lazy" onclick="abrirLightboxRef('${ref._id}')" title="Clic para ampliar"><div class="ref-card-body"><div class="ref-card-note">${ref.nota||""}</div></div><button class="ref-card-del" onclick="borrarRef('${ref._id}')">🗑️</button>`;
+  } else if(ref.tipo==="link"){
+    // Try to get Open Graph image preview via Google's image proxy
+    const domain=()=>{try{return new URL(ref.link).hostname;}catch(e){return"";}};
+    const previewImg=`https://www.google.com/s2/favicons?domain=${domain()}&sz=64`;
+    // For Pinterest/Instagram links, show a larger preview attempt
+    const isPinterest=ref.link.includes("pinterest");
+    const isInstagram=ref.link.includes("instagram");
+    card.className="ref-card";
+    card.style.cursor="pointer";
+    card.innerHTML=`
+      <div style="width:100%;height:130px;background:var(--bg2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer" onclick="window.open('${ref.link}','_blank')">
+        <img src="${previewImg}" style="width:40px;height:40px;border-radius:8px" onerror="this.style.display='none'">
+        <div style="font-size:10px;color:var(--text2);word-break:break-all;padding:0 8px;text-align:center;line-height:1.4">${domain()}</div>
+      </div>
+      <div class="ref-card-body">
+        <a href="${ref.link}" target="_blank" class="link-ext" style="font-size:11px;word-break:break-all;display:block;margin-bottom:4px">${ref.link.length>40?ref.link.slice(0,40)+"...":ref.link}</a>
+        ${ref.nota?`<div class="ref-card-note">${ref.nota}</div>`:""}
+      </div>
+      <button class="ref-card-del" onclick="event.stopPropagation();borrarRef('${ref._id}')">🗑️</button>`;
+  } else {
+    card.className="ref-link-item";
+    card.innerHTML=`<span>📝</span><div style="flex:1;font-size:13px">${ref.nota}</div><button class="btn-sm del" onclick="borrarRef('${ref._id}')">🗑️</button>`;
+  }
   grid.appendChild(card);
 }
+
+
 function makeTipCard(t,ctxTips){
   const BC={embarazo:"tip-badge-embarazo",crianza:"tip-badge-crianza",deco:"tip-badge-deco",custom:"tip-badge-custom",auto:"tip-badge-auto"};
   const CL={embarazo:"🤰 Embarazo",crianza:"👶 Crianza",deco:"🎨 Deco",custom:"💜 Nuestro",auto:"✨ Automático"};
@@ -901,9 +926,37 @@ async function initApp(){
   presData=await gAll("presupuestos");renderPres();
   rutinasCustom=await gAll("rutinas");renderRutinasCustom();
   tipsCustom=await gAll("tips");renderTips(lastCtx);
-  AMBS.forEach(async amb=>{const d=await getDoc(doc(db,"ambientes",amb));if(d.exists()){ambData[amb]={...ambData[amb],...d.data()};["color","arreglos","deco"].forEach(k=>{const el=document.getElementById(k+"-"+amb);if(el)el.value=ambData[amb][k]||"";})}});
+    for(const amb of AMBS){
+    try{
+      const d=await getDoc(doc(db,"ambientes",amb));
+      if(d.exists()){
+        ambData[amb]={...ambData[amb],...d.data()};
+        ["color","arreglos","deco"].forEach(k=>{
+          const el=document.getElementById(k+"-"+amb);
+          if(el){el.value=ambData[amb][k]||"";}
+        });
+      }
+    }catch(e){console.log("amb load error",amb,e);}
+  }
   const refs=await gAll("refs");refs.sort((a,b)=>(a.ts||0)-(b.ts||0));refs.forEach(ref=>{const grid=document.getElementById("refs-"+ref.amb);if(grid){const emp=grid.querySelector("p.empty-ref");if(emp)emp.remove();renderRef(ref,grid);}});
 }
+
+window.borrarRef=(id)=>confirm2("¿Eliminás esta referencia?",async()=>{
+  await dItem("refs",id);
+  const el=document.querySelector('[data-ref-id="'+id+'"]');
+  if(el)el.remove();
+});
+
+window.abrirLightboxRef=(id)=>{
+  const card=document.querySelector('[data-ref-id="'+id+'"]');
+  if(!card)return;
+  const img=card.querySelector("img");
+  if(img){
+    document.getElementById("lightbox-img").src=img.src;
+    document.getElementById("lightbox").style.display="flex";
+  }
+};
+
 window.dItem=dItem;
 window.confirm2=confirm2;
 window.del2=del2;
