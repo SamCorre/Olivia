@@ -776,15 +776,50 @@ function renderPres(){
 function initAmbPanels(){
   const cont=document.getElementById("amb-panels");cont.innerHTML="";
   AMBS.forEach(amb=>{
-    const div=document.createElement("div");div.className="amb-panel"+(amb==="cocina"?" active":"");div.id="amb-"+amb;
-    const ta=(id,ph,key)=>`<div class="modal-row"><label>${ph}</label><textarea id="${id}-${amb}" oninput="ambData['${amb}'].${key}=this.value;checkCtx()" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;min-height:60px;resize:vertical"></textarea></div>`;
-    div.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:1rem">${ta("color","Color(es) pensados","color")}${ta("arreglos","Arreglos / reformas","arreglos")}${ta("deco","Decoración","deco")}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-size:13px;font-weight:500;color:var(--text2)">Referencias e inspiración</div><button class="btn-add" style="padding:6px 12px;font-size:12px" onclick="currentAmb='${amb}';document.getElementById('modal-amb').classList.add('open')">+ Agregar referencia</button></div><div class="ref-grid" id="refs-${amb}"><p class="empty-ref" style="font-size:13px;color:var(--text3);font-style:italic;grid-column:1/-1">Sin referencias todavía.</p></div><button class="btn-sm done" style="margin-top:10px" onclick="guardarAmb('${amb}')">💾 Guardar ${AMBN[amb]}</button>`;
+    const div=document.createElement("div");
+    div.className="amb-panel"+(amb==="cocina"?" active":"");
+    div.id="amb-"+amb;
+    div.innerHTML=`
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:1rem">
+        <div>
+          <label style="font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:4px">Color(es) pensados</label>
+          <textarea id="color-${amb}" placeholder="Ej: verde oliva claro, blanco roto..." style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;min-height:70px;resize:vertical"></textarea>
+          <button class="btn-sm done" style="margin-top:5px;width:100%" onclick="guardarCampoAmb('${amb}','color')">💾 Guardar</button>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:4px">Arreglos / reformas</label>
+          <textarea id="arreglos-${amb}" placeholder="Ej: cambiar piso, pintar, instalar estante..." style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;min-height:70px;resize:vertical"></textarea>
+          <button class="btn-sm done" style="margin-top:5px;width:100%" onclick="guardarCampoAmb('${amb}','arreglos')">💾 Guardar</button>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:4px">Decoración</label>
+          <textarea id="deco-${amb}" placeholder="Muebles, plantas, cuadros, iluminación..." style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;min-height:70px;resize:vertical"></textarea>
+          <button class="btn-sm done" style="margin-top:5px;width:100%" onclick="guardarCampoAmb('${amb}','deco')">💾 Guardar</button>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:500;color:var(--text2)">Referencias e inspiración</div>
+        <button class="btn-add" style="padding:6px 12px;font-size:12px" onclick="currentAmb='${amb}';document.getElementById('modal-amb').classList.add('open')">+ Agregar referencia</button>
+      </div>
+      <div class="ref-grid" id="refs-${amb}"><p class="empty-ref" style="font-size:13px;color:var(--text3);font-style:italic;grid-column:1/-1">Sin referencias todavía.</p></div>
+    `;
     cont.appendChild(div);
   });
 }
+
 window.showAmb=(amb,btn)=>{document.querySelectorAll("#amb-tabs .amb-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");document.querySelectorAll(".amb-panel").forEach(p=>p.classList.remove("active"));document.getElementById("amb-"+amb).classList.add("active");currentAmb=amb;};
 window.toggleAmbTipo=()=>{const t=document.getElementById("ma-tipo").value;document.getElementById("ma-link-row").style.display=t==="link"?"":"none";document.getElementById("ma-img-row").style.display=t==="imagen"?"":"none";};
 window.guardarAmb=async(amb)=>await sDoc("ambientes",amb,ambData[amb]);
+window.guardarCampoAmb=async(amb,campo)=>{
+  const el=document.getElementById(campo+"-"+amb);
+  if(!el)return;
+  const val=el.value;
+  ambData[amb][campo]=val;
+  await sDoc("ambientes",amb,{[campo]:val});
+  // Visual feedback
+  const btn=el.nextElementSibling;
+  if(btn){const orig=btn.textContent;btn.textContent="✅ Guardado";setTimeout(()=>btn.textContent=orig,1500);}
+};
 let _sr=false;
 window.guardarRef=async()=>{
   if(_sr)return;_sr=true;
