@@ -201,7 +201,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);fon
     <button class="btn-add" onclick="guardarEmbarazo()" style="width:100%">💾 Guardar seguimiento</button>
     <div class="progress-bar" style="margin-top:1rem"><div class="progress-fill" id="prog-fill" style="width:60%"></div></div>
     <p style="font-size:12px;color:var(--text2);text-align:center" id="prog-label">Cargando...</p>
-    <div class="trim-badges"><span class="trim-badge b-done">1er trimestre ✓</span><span class="trim-badge b-current" id="tb2">2do trimestre — actual</span><span class="trim-badge b-pending" id="tb3">3er trimestre</span></div>
+    <div class="trim-badges"><span class="trim-badge b-done">1er trimestre ✓</span><span class="trim-badge b-pending" id="tb2">2do trimestre</span><span class="trim-badge b-pending" id="tb3">3er trimestre</span></div>
   </div>
   <div class="stat-grid">
     <div class="stat-card"><div class="stat-num" id="st-semanas">—</div><div class="stat-label">semanas restantes</div></div>
@@ -604,9 +604,9 @@ function updateEmbUI(sem,dias,fpp){
   document.getElementById("st-pct").textContent=pct+"%";
   document.getElementById("st-fpp").textContent=fpp?new Date(fpp+"T00:00:00").toLocaleDateString("es-AR",{day:"numeric",month:"long"}):"—";
   const b2=document.getElementById("tb2"),b3=document.getElementById("tb3");
-  if(sem<=13){b2.className="trim-badge b-pending";b3.className="trim-badge b-pending";}
-  else if(sem<=27){b2.className="trim-badge b-current";b3.className="trim-badge b-pending";}
-  else{b2.className="trim-badge b-done";b3.className="trim-badge b-current";}
+  if(sem<=13){b2.className="trim-badge b-pending";b2.textContent="2do trimestre";b3.className="trim-badge b-pending";b3.textContent="3er trimestre";}
+  else if(sem<=27){b2.className="trim-badge b-current";b2.textContent="2do trimestre — actual";b3.className="trim-badge b-pending";b3.textContent="3er trimestre";}
+  else{b2.className="trim-badge b-done";b2.textContent="2do trimestre ✓";b3.className="trim-badge b-current";b3.textContent="3er trimestre — actual ✨";}
   document.getElementById("rutina-semana-num").textContent=sem;
   renderWI(sem);renderRI(sem);
 }
@@ -941,7 +941,22 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){document.getElement
 async function initApp(){
   initAmbPanels();
   const ed=await getDoc(doc(db,"config","embarazo"));
-  if(ed.exists()){const d=ed.data(),c=calcSem(d.sem||24,d.dias||0,d.fechaRef||null,d.fpp||null);document.getElementById("inp-semana").value=c.sem;document.getElementById("inp-dias").value=c.dias;document.getElementById("inp-fpp").value=d.fpp||"";updateEmbUI(c.sem,c.dias,d.fpp||"");}else{updateEmbUI(24,0,"");}
+  if(ed.exists()){
+    const d=ed.data();
+    const fpp=d.fpp||null;
+    const c=calcSem(d.sem||24,d.dias||0,d.fechaRef||null,fpp);
+    document.getElementById("inp-semana").value=c.sem;
+    document.getElementById("inp-dias").value=c.dias;
+    document.getElementById("inp-fpp").value=fpp||"";
+    updateEmbUI(c.sem,c.dias,fpp||"");
+    // Auto-update fechaRef in Firebase so future loads stay accurate
+    if(fpp){
+      const today=new Date().toISOString().slice(0,10);
+      if(d.fechaRef!==today){
+        sDoc("config","embarazo",{sem:c.sem,dias:c.dias,fechaRef:today,fpp:fpp});
+      }
+    }
+  }else{updateEmbUI(24,0,"");}
   const ne=await getDoc(doc(db,"notas","embarazo"));if(ne.exists()){const el=document.getElementById("nota-embarazo");el.value=ne.data().texto||"";el.style.height="auto";el.style.height=el.scrollHeight+"px";}
   const no=await getDoc(doc(db,"notas","obstetra"));if(no.exists()){const el=document.getElementById("nota-obstetra");el.value=no.data().texto||"";el.style.height="auto";el.style.height=el.scrollHeight+"px";}
   const nm=await getDoc(doc(db,"notas","mudanza"));if(nm.exists()){const el=document.getElementById("nota-mudanza");el.value=nm.data().texto||"";el.style.height="auto";el.style.height=el.scrollHeight+"px";}
